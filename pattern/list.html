@@ -454,9 +454,9 @@
                     </select>
                 </div>
                 <div class="search-item">
-                        <button class="btn btn-primary" style="width: 100px;">
-                       筛选
-                    </button> 
+                    <button class="btn btn-primary" style="width: 100px;">
+                        筛选
+                    </button>
                 </div>
             </div>
 
@@ -480,7 +480,7 @@
                     <button class="btn btn-primary">
                         <i class="fas fa-download"></i>模板下载
                     </button>
-      
+
                 </div>
             </div>
         </div>
@@ -746,60 +746,42 @@
                 <h3>历史背景</h3>
                 <span class="modal-close" onclick="closeModal('historyModal')">&times;</span>
             </div>
-            <div class="modal-body">
-                <form id="historyForm">
-                    <div class="form-group">
-                        <label>历史背景</label>
-                        <textarea class="form-control" name="historyBackground" rows="3" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>年代</label>
-                        <select class="form-control" name="era" required>
-                            <option value="">请选择年代</option>
-                            <option value="tang">唐代</option>
-                            <option value="song">宋代</option>
-                            <option value="ming">明代</option>
-                            <option value="qing">清代</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>地区/民族</label>
-                        <select class="form-control" name="region" required>
-                            <option value="">请选择地区/民族</option>
-                            <option value="zhongyuan">中原</option>
-                            <option value="jiangnan">江南</option>
-                            <option value="xibei">西北</option>
-                            <option value="dongbei">东北</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>文化故事</label>
-                        <textarea class="form-control" name="culturalStory" rows="3"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>相关文献</label>
-                        <textarea class="form-control" name="relatedLiterature" rows="2"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>图案来源</label>
-                        <input type="text" class="form-control" name="patternSource">
-                    </div>
-                    <div class="upload-area">
-                        <h4>文件上传</h4>
-                        <div id="historyUploadArea">
-                            <!-- Element UI 上传组件将在这里初始化 -->
-                        </div>
-                        <div class="upload-buttons">
-                            <button type="button" class="btn btn-primary" onclick="initHistoryUploader()">
-                                <i class="fas fa-upload"></i>文件上传
-                            </button>
-                            <button type="button" class="btn btn-primary" onclick="startHistoryScanner()">
-                                <i class="fas fa-scanner"></i>扫描仪上传
-                            </button>
-                        </div>
-                    </div>
-                </form>
+            <div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                             <th>操作</th>
+                            <th>图案名称</th>
+                            <th>历史背景</th>
+                            <th>年代</th>
+                            <th>地区/民族</th>
+                            <th>文化故事</th>
+                            <th>相关文献</th>
+                            <th>图案来源</th>
+                            <th>附件</th>
+                 
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                                 <td>o</td>
+                            <td>牡丹纹样</td>
+                            <td>唐代盛行，象征富贵吉祥</td>
+                            <td>唐代</td>
+                            <td>中原地区</td>
+                            <td>牡丹在中国传统文化中象征富贵...</td>
+                            <td>《唐代纹样研究》</td>
+                            <td>出土文物</td>
+                            <td>
+                                <i class="fas fa-file-pdf"></i>
+                                <i class="fas fa-file-image"></i>
+                            </td>
+
+                        </tr>
+                    </tbody>
+                </table>
             </div>
+
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeModal('historyModal')">取消</button>
                 <button class="btn btn-primary" onclick="submitHistory()">确定</button>
@@ -815,54 +797,35 @@
                 <span class="modal-close" onclick="closeModal('attributeModal')">&times;</span>
             </div>
             <div class="modal-body">
-                <form id="attributeForm">
-                    <div class="form-group">
-                        <label>图案ID</label>
-                        <input type="text" class="form-control" name="patternId" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label>图案名称</label>
-                        <input type="text" class="form-control" name="patternName" required>
-                    </div>
-                    <div class="form-group">
-                        <label>图案别名</label>
-                        <input type="text" class="form-control" name="patternAlias">
-                    </div>
-                    <div class="form-group">
-                        <label>图案类别</label>
-                        <select class="form-control" name="patternCategory" required>
-                            <option value="">请选择类别</option>
-                            <option value="floral">花卉类</option>
-                            <option value="animal">动物类</option>
-                            <option value="geometric">几何类</option>
-                            <option value="character">人物类</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>图案类型</label>
-                        <select class="form-control" name="patternType" required>
-                            <option value="">请选择类型</option>
-                            <option value="traditional">传统图案</option>
-                            <option value="modern">现代图案</option>
-                            <option value="folk">民间图案</option>
-                            <option value="religious">宗教图案</option>
-                        </select>
-                    </div>
-                    <div class="upload-area">
-                        <h4>文件上传</h4>
-                        <div id="attributeUploadArea">
-                            <!-- Element UI 上传组件将在这里初始化 -->
-                        </div>
-                        <div class="upload-buttons">
-                            <button type="button" class="btn btn-primary" onclick="initAttributeUploader()">
-                                <i class="fas fa-upload"></i>文件上传
-                            </button>
-                            <button type="button" class="btn btn-primary" onclick="startAttributeScanner()">
-                                <i class="fas fa-scanner"></i>扫描仪上传
-                            </button>
-                        </div>
-                    </div>
-                </form>
+                <table class="table">
+                    <thead>
+                        <tr>
+                                 <th>操作</th>
+                            <th>图案ID</th>
+                            <th>图案名称</th>
+                            <th>图案别名</th>
+                            <th>图案类别</th>
+                            <th>图案类型</th>
+                            <th>附件</th>
+                         
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                                   <td>o</td>
+                            <td>P001</td>
+                            <td>牡丹纹样</td>
+                            <td>富贵花</td>
+                            <td>花卉类</td>
+                            <td>传统图案</td>
+                            <td>
+                                <i class="fas fa-file-pdf"></i>
+                                <i class="fas fa-file-image"></i>
+                            </td>
+
+                        </tr>
+                    </tbody>
+                </table>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeModal('attributeModal')">取消</button>
@@ -879,69 +842,54 @@
                 <span class="modal-close" onclick="closeModal('mediaModal')">&times;</span>
             </div>
             <div class="modal-body">
-                <form id="mediaForm">
-                    <div class="form-group">
-                        <label>图案名称</label>
-                        <select class="form-control" name="patternName" required>
-                            <option value="">请选择图案</option>
-                            <option value="P001">牡丹纹样</option>
-                            <option value="P002">莲花纹样</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>图像文件</label>
-                        <div class="file-group">
-                            <div id="imageUploadArea">
-                                <!-- Element UI 上传组件将在这里初始化 -->
-                            </div>
-                            <div class="file-preview" id="imagePreview"></div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>图像描述</label>
-                        <textarea class="form-control" name="imageDescription" rows="2"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>视频文件</label>
-                        <div class="file-group">
-                            <div id="videoUploadArea">
-                                <!-- Element UI 上传组件将在这里初始化 -->
-                            </div>
-                            <div class="file-preview" id="videoPreview"></div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>视频描述</label>
-                        <textarea class="form-control" name="videoDescription" rows="2"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>音频资料</label>
-                        <div class="file-group">
-                            <div id="audioUploadArea">
-                                <!-- Element UI 上传组件将在这里初始化 -->
-                            </div>
-                            <div class="file-preview" id="audioPreview"></div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>三维模型</label>
-                        <div class="file-group">
-                            <div id="modelUploadArea">
-                                <!-- Element UI 上传组件将在这里初始化 -->
-                            </div>
-                            <div class="file-preview" id="modelPreview"></div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>缩略图</label>
-                        <div class="file-group">
-                            <div id="thumbnailUploadArea">
-                                <!-- Element UI 上传组件将在这里初始化 -->
-                            </div>
-                            <div class="file-preview" id="thumbnailPreview"></div>
-                        </div>
-                    </div>
-                </form>
+                <table class="table">
+                    <thead>
+                        <tr>
+                                 <th>操作</th>
+                            <th>图案名称</th>
+                            <th>图像文件</th>
+                            <th>图像描述</th>
+                            <th>视频文件</th>
+                            <th>视频描述</th>
+                            <th>音频资料</th>
+                            <th>三维模型</th>
+                        
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                                <td>o</td>
+                            <td>牡丹纹样</td>
+                            <td>
+                                <div class="file-preview">
+                                    <img src="../assets/thumbnails/peony.jpg" alt="牡丹纹样" class="thumbnail">
+                                    <span class="filename">peony_image.jpg</span>
+                                </div>
+                            </td>
+                            <td>牡丹纹样高清图片，展示传统纹样细节</td>
+                            <td>
+                                <div class="file-preview">
+                                    <i class="fas fa-video"></i>
+                                    <span class="filename">peony_video.mp4</span>
+                                </div>
+                            </td>
+                            <td>牡丹纹样制作过程视频</td>
+                            <td>
+                                <div class="file-preview">
+                                    <i class="fas fa-music"></i>
+                                    <span class="filename">peony_audio.mp3</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="file-preview">
+                                    <i class="fas fa-cube"></i>
+                                    <span class="filename">peony_3d.obj</span>
+                                </div>
+                            </td>
+                    
+                        </tr>
+                    </tbody>
+                </table>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeModal('mediaModal')">取消</button>

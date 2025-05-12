@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,6 +20,7 @@
             background-color: rgba(0, 0, 0, 0.5);
             z-index: 1000;
         }
+
         .modal-content {
             position: relative;
             background-color: #fff;
@@ -29,6 +31,7 @@
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
+
         .modal-header {
             display: flex;
             justify-content: space-between;
@@ -37,28 +40,34 @@
             padding-bottom: 10px;
             border-bottom: 1px solid #eee;
         }
+
         .modal-close {
             cursor: pointer;
             font-size: 20px;
             color: #666;
         }
+
         .modal-body {
             margin-bottom: 20px;
         }
+
         .form-group {
             margin-bottom: 15px;
         }
+
         .form-group label {
             display: block;
             margin-bottom: 5px;
             font-weight: 500;
         }
+
         .form-control {
             width: 100%;
             padding: 8px;
             border: 1px solid #ddd;
             border-radius: 4px;
         }
+
         .upload-area {
             margin-top: 20px;
             padding: 20px;
@@ -66,12 +75,14 @@
             border-radius: 4px;
             text-align: center;
         }
+
         .upload-buttons {
             display: flex;
             gap: 10px;
             justify-content: center;
             margin-top: 10px;
         }
+
         .modal-footer {
             text-align: right;
             padding-top: 20px;
@@ -89,6 +100,7 @@
             background-color: rgba(0, 0, 0, 0.5);
             z-index: 1000;
         }
+
         .detail-modal-content {
             position: relative;
             background-color: #fff;
@@ -101,6 +113,7 @@
             max-height: 90vh;
             overflow-y: auto;
         }
+
         .detail-tabs {
             display: flex;
             gap: 10px;
@@ -108,18 +121,22 @@
             border-bottom: 1px solid #eee;
             padding-bottom: 10px;
         }
+
         .detail-tab {
             padding: 8px 16px;
             cursor: pointer;
             border-radius: 4px;
         }
+
         .detail-tab.active {
             background-color: #1890ff;
             color: white;
         }
+
         .detail-content {
             display: none;
         }
+
         .detail-content.active {
             display: block;
         }
@@ -131,6 +148,7 @@
             gap: 10px;
             margin-left: 10px;
         }
+
         .function-button {
             padding: 8px 16px;
             border: none;
@@ -140,6 +158,7 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
+
         .function-button:hover {
             background-color: #40a9ff;
         }
@@ -154,6 +173,7 @@
             background-color: #f8f9fa;
             border-radius: 4px;
         }
+
         .function-button {
             padding: 10px 16px;
             border: none;
@@ -165,9 +185,11 @@
             text-align: left;
             font-size: 14px;
         }
+
         .function-button:hover {
             background-color: #40a9ff;
         }
+
         .function-button i {
             margin-right: 8px;
         }
@@ -178,18 +200,22 @@
             margin-bottom: 20px;
             border-radius: 4px;
         }
+
         .alert-warning {
             background-color: #fff3cd;
             border: 1px solid #ffeeba;
             color: #856404;
         }
+
         .btn-danger {
             background-color: #dc3545;
             color: white;
         }
+
         .btn-danger:hover {
             background-color: #c82333;
         }
+
         .action-buttons {
             display: flex;
             gap: 8px;
@@ -200,11 +226,13 @@
             position: relative;
             display: inline-block;
         }
+
         .dropdown-toggle {
             display: flex;
             align-items: center;
             gap: 5px;
         }
+
         .dropdown-menu {
             display: none;
             position: absolute;
@@ -212,14 +240,16 @@
             top: 100%;
             background-color: white;
             min-width: 160px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
             border-radius: 4px;
             z-index: 1000;
             margin-top: 5px;
         }
+
         .dropdown-menu.show {
             display: block;
         }
+
         .dropdown-item {
             display: flex;
             align-items: center;
@@ -230,9 +260,11 @@
             cursor: pointer;
             white-space: nowrap;
         }
+
         .dropdown-item:hover {
             background-color: #f5f5f5;
         }
+
         .dropdown-item i {
             width: 16px;
             text-align: center;
@@ -243,21 +275,26 @@
             background-color: #17a2b8;
             color: white;
         }
+
         .btn-info:hover {
             background-color: #138496;
         }
+
         .btn-warning {
             background-color: #ffc107;
             color: #212529;
         }
+
         .btn-warning:hover {
             background-color: #e0a800;
         }
+
         .file-group {
             display: flex;
             flex-direction: column;
             gap: 10px;
         }
+
         .file-preview {
             display: flex;
             flex-wrap: wrap;
@@ -267,6 +304,7 @@
             border-radius: 4px;
             min-height: 50px;
         }
+
         .file-preview-item {
             position: relative;
             width: 100px;
@@ -275,16 +313,18 @@
             border-radius: 4px;
             overflow: hidden;
         }
+
         .file-preview-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
+
         .file-preview-item .remove-btn {
             position: absolute;
             top: 2px;
             right: 2px;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
             color: white;
             border: none;
             border-radius: 50%;
@@ -297,6 +337,7 @@
         .history-form {
             padding: 20px;
         }
+
         .form-row {
             display: flex;
             flex-wrap: wrap;
@@ -304,22 +345,27 @@
             margin-left: -10px;
             margin-bottom: 20px;
         }
+
         .form-group {
             padding: 0 10px;
             margin-bottom: 15px;
         }
+
         .col-md-6 {
             flex: 0 0 50%;
             max-width: 50%;
         }
+
         .col-md-12 {
             flex: 0 0 100%;
             max-width: 100%;
         }
+
         .required:after {
             content: " *";
             color: #dc3545;
         }
+
         .form-control {
             width: 100%;
             padding: 8px 12px;
@@ -327,45 +373,53 @@
             border-radius: 4px;
             transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
         }
+
         .form-control:focus {
             border-color: #80bdff;
             outline: 0;
-            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, .25);
         }
+
         .upload-container {
             border: 1px solid #ddd;
             border-radius: 4px;
             padding: 15px;
             background-color: #f8f9fa;
         }
+
         .upload-area {
             margin-bottom: 15px;
         }
+
         .upload-buttons {
             display: flex;
             gap: 10px;
             margin-bottom: 10px;
         }
+
         .upload-tip {
             color: #6c757d;
             font-size: 0.875rem;
             margin-top: 5px;
         }
+
         .upload-tip i {
             margin-right: 5px;
         }
+
         textarea.form-control {
             resize: vertical;
             min-height: 100px;
         }
+
         select.form-control {
             appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23343a40' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
         }
-
     </style>
 </head>
+
 <body>
     <div class="page-container">
         <!-- 页面标题 -->
@@ -390,9 +444,9 @@
                     </select>
                 </div>
                 <div class="search-item">
-                    <label class="search-label">年代</label>
+                    <label class="search-label">图案类型</label>
                     <select class="search-input">
-                        <option value="">全部年代</option>
+                        <option value="">图案类型</option>
                         <option value="tang">唐代</option>
                         <option value="song">宋代</option>
                         <option value="ming">明代</option>
@@ -400,8 +454,9 @@
                     </select>
                 </div>
                 <div class="search-item">
-                    <label class="search-label">地域/民族</label>
-                    <input type="text" class="search-input" placeholder="请输入地域或民族">
+                        <button class="btn btn-primary" style="width: 100px;">
+                       筛选
+                    </button> 
                 </div>
             </div>
 
@@ -425,6 +480,7 @@
                     <button class="btn btn-primary">
                         <i class="fas fa-download"></i>模板下载
                     </button>
+      
                 </div>
             </div>
         </div>
@@ -487,7 +543,8 @@
             <!-- 分页 -->
             <div class="pagination">
                 <div class="pagination-info">
-                    显示第 <span class="font-medium">1</span> 到 <span class="font-medium">10</span> 条，共 <span class="font-medium">45</span> 条记录
+                    显示第 <span class="font-medium">1</span> 到 <span class="font-medium">10</span> 条，共 <span
+                        class="font-medium">45</span> 条记录
                 </div>
                 <div class="pagination-buttons">
                     <button class="pagination-button">
@@ -1098,11 +1155,11 @@
             document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
                 menu.classList.remove('show');
             });
-            
+
             // 显示版本管理弹窗
             const modal = document.getElementById('versionModal');
             modal.style.display = 'block';
-            
+
             // TODO: 根据patternId加载对应的版本数据
             console.log('显示图案版本管理:', patternId);
         }
@@ -1113,11 +1170,11 @@
             document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
                 menu.classList.remove('show');
             });
-            
+
             // 显示版本回退弹窗
             const modal = document.getElementById('versionRollbackModal');
             modal.style.display = 'block';
-            
+
             // TODO: 根据patternId加载对应的版本数据
             console.log('显示图案版本回退:', patternId);
         }
@@ -1227,7 +1284,7 @@
                 alert('请选择要回退的版本！');
                 return;
             }
-            
+
             if (confirm('确定要回退到该版本吗？当前版本的数据将被覆盖！')) {
                 // TODO: 实现版本回退功能
                 console.log('回退到版本:', selectedVersion.value);
@@ -1248,14 +1305,14 @@
         }
 
         // 点击弹窗外部关闭弹窗
-        window.onclick = function(event) {
+        window.onclick = function (event) {
             if (event.target.classList.contains('modal') || event.target.classList.contains('detail-modal')) {
                 event.target.style.display = 'none';
             }
         }
 
         // 按ESC键关闭弹窗
-        document.addEventListener('keydown', function(event) {
+        document.addEventListener('keydown', function (event) {
             if (event.key === 'Escape') {
                 document.querySelectorAll('.modal, .detail-modal').forEach(modal => {
                     modal.style.display = 'none';
@@ -1267,7 +1324,7 @@
         function toggleVersionDropdown(button) {
             const dropdownMenu = button.nextElementSibling;
             dropdownMenu.classList.toggle('show');
-            
+
             // 点击其他地方关闭下拉菜单
             document.addEventListener('click', function closeDropdown(e) {
                 if (!button.contains(e.target) && !dropdownMenu.contains(e.target)) {
@@ -1403,7 +1460,7 @@
             const preview = document.getElementById(previewId);
             const item = document.createElement('div');
             item.className = 'file-preview-item';
-            
+
             if (file.type.startsWith('image/')) {
                 const img = document.createElement('img');
                 img.src = URL.createObjectURL(file);
@@ -1411,7 +1468,7 @@
             } else {
                 item.textContent = file.name;
             }
-            
+
             const removeBtn = document.createElement('button');
             removeBtn.className = 'remove-btn';
             removeBtn.innerHTML = '×';
@@ -1419,7 +1476,7 @@
                 item.remove();
                 // TODO: 调用相应的删除API
             };
-            
+
             item.appendChild(removeBtn);
             preview.appendChild(item);
         }
@@ -1485,7 +1542,7 @@
         }
 
         // 页面加载完成后初始化上传组件
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             initMediaUploaders();
         });
 
@@ -1498,7 +1555,7 @@
         function showEditHistoryModal(historyId) {
             const modal = document.getElementById('editHistoryModal');
             const form = document.getElementById('editHistoryForm');
-            
+
             // TODO: 根据historyId加载数据
             // 模拟加载数据
             form.elements.historyId.value = historyId;
@@ -1509,7 +1566,7 @@
             form.elements.culturalStory.value = '牡丹在中国传统文化中象征富贵...';
             form.elements.relatedLiterature.value = '《唐代纹样研究》';
             form.elements.patternSource.value = '出土文物';
-            
+
             modal.style.display = 'block';
         }
 
@@ -1593,7 +1650,7 @@
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
             console.log('提交新增历史背景:', data);
-            
+
             Vue.prototype.$message.success('保存成功！');
             closeModal('addHistoryModal');
         }
@@ -1610,7 +1667,7 @@
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
             console.log('提交编辑历史背景:', data);
-            
+
             Vue.prototype.$message.success('保存成功！');
             closeModal('editHistoryModal');
         }
@@ -1631,4 +1688,5 @@
         }
     </script>
 </body>
-</html> 
+
+</html>

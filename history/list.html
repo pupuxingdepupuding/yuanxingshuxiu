@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,24 +14,29 @@
             content: " *";
             color: #dc3545;
         }
+
         .action-buttons {
             display: flex;
             gap: 8px;
         }
+
         .action-buttons .btn {
             padding: 4px 8px;
             font-size: 14px;
         }
+
         .table td {
             max-width: 200px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
+
         .table td i {
             margin-right: 8px;
             color: #666;
         }
+
         .modal {
             display: none;
             position: fixed;
@@ -41,6 +47,7 @@
             background-color: rgba(0, 0, 0, 0.5);
             z-index: 1000;
         }
+
         .modal-content {
             position: relative;
             background-color: #fff;
@@ -51,6 +58,7 @@
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
+
         .modal-header {
             display: flex;
             justify-content: space-between;
@@ -59,28 +67,34 @@
             padding-bottom: 10px;
             border-bottom: 1px solid #eee;
         }
+
         .modal-close {
             cursor: pointer;
             font-size: 20px;
             color: #666;
         }
+
         .modal-body {
             margin-bottom: 20px;
         }
+
         .form-group {
             margin-bottom: 15px;
         }
+
         .form-group label {
             display: block;
             margin-bottom: 5px;
             font-weight: 500;
         }
+
         .form-control {
             width: 100%;
             padding: 8px;
             border: 1px solid #ddd;
             border-radius: 4px;
         }
+
         .upload-area {
             margin-top: 20px;
             padding: 20px;
@@ -88,23 +102,27 @@
             border-radius: 4px;
             text-align: center;
         }
+
         .upload-buttons {
             display: flex;
             gap: 10px;
             justify-content: center;
             margin-top: 10px;
         }
+
         .modal-footer {
             text-align: right;
             padding-top: 20px;
             border-top: 1px solid #eee;
         }
+
         textarea.form-control {
             resize: vertical;
             min-height: 100px;
         }
     </style>
 </head>
+
 <body>
     <div class="page-container">
         <h1 class="page-title">历史背景管理</h1>
@@ -113,23 +131,8 @@
         <div class="search-container">
             <div class="search-grid">
                 <div class="search-item">
-                    <label class="search-label">图案名称</label>
-                    <input type="text" class="search-input" placeholder="请输入图案名称">
-                </div>
-                <div class="search-item">
-                    <label class="search-label">年代</label>
-                    <select class="search-input">
-                        <option value="">全部年代</option>
-                        <option value="pre-qin">先秦</option>
-                        <option value="qin-han">秦汉</option>
-                        <option value="wei-jin">魏晋南北朝</option>
-                        <option value="sui-tang">隋唐</option>
-                        <option value="song">宋代</option>
-                        <option value="yuan">元代</option>
-                        <option value="ming">明代</option>
-                        <option value="qing">清代</option>
-                        <option value="modern">近现代</option>
-                    </select>
+                    <label class="search-label">图案来源</label>
+                    <input type="text" class="search-input" placeholder="请输入图案来源">
                 </div>
                 <div class="search-item">
                     <label class="search-label">地区/民族</label>
@@ -148,6 +151,38 @@
                             <option value="weiwuer">维吾尔族</option>
                         </optgroup>
                     </select>
+                </div>
+                <div class="search-item">
+                    <label class="search-label">相关文献</label>
+                    <input type="text" class="search-input" placeholder="请输入相关文献">
+                </div>
+
+            </div>
+            <div class="search-grid">
+                <div class="search-item">
+                    <label class="search-label">图案名称</label>
+                    <input type="text" class="search-input" placeholder="请输入图案名称">
+                </div>
+
+                <div class="search-item">
+                    <label class="search-label">年代</label>
+                    <select class="search-input">
+                        <option value="">全部年代</option>
+                        <option value="pre-qin">先秦</option>
+                        <option value="qin-han">秦汉</option>
+                        <option value="wei-jin">魏晋南北朝</option>
+                        <option value="sui-tang">隋唐</option>
+                        <option value="song">宋代</option>
+                        <option value="yuan">元代</option>
+                        <option value="ming">明代</option>
+                        <option value="qing">清代</option>
+                        <option value="modern">近现代</option>
+                    </select>
+                </div>
+                <div class="search-item">
+                          <button class="btn btn-primary" style="width: 100px;">
+                     筛选
+                    </button> 
                 </div>
             </div>
 
@@ -171,6 +206,10 @@
                     <button class="btn btn-primary">
                         <i class="fas fa-download"></i>模板下载
                     </button>
+                          <button class="btn btn-primary">
+                        <i class="fas fa-download"></i>扫描仪上传
+                    </button>
+
                 </div>
             </div>
         </div>
@@ -221,7 +260,8 @@
             <!-- 分页 -->
             <div class="pagination">
                 <div class="pagination-info">
-                    显示第 <span class="font-medium">1</span> 到 <span class="font-medium">10</span> 条，共 <span class="font-medium">45</span> 条记录
+                    显示第 <span class="font-medium">1</span> 到 <span class="font-medium">10</span> 条，共 <span
+                        class="font-medium">45</span> 条记录
                 </div>
                 <div class="pagination-buttons">
                     <button class="pagination-button">
@@ -335,7 +375,7 @@
         function showHistoryModal(historyId) {
             const modal = document.getElementById('historyModal');
             const form = document.getElementById('historyForm');
-            
+
             if (historyId) {
                 // 编辑模式
                 document.querySelector('.modal-header h3').textContent = '编辑历史背景';
@@ -354,7 +394,7 @@
                 form.reset();
                 form.elements.historyId.value = '';
             }
-            
+
             modal.style.display = 'block';
         }
 
@@ -415,7 +455,7 @@
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
             console.log('提交历史背景:', data);
-            
+
             Vue.prototype.$message.success('保存成功！');
             closeModal('historyModal');
         }
@@ -436,14 +476,14 @@
         }
 
         // 点击弹窗外部关闭弹窗
-        window.onclick = function(event) {
+        window.onclick = function (event) {
             if (event.target.classList.contains('modal')) {
                 event.target.style.display = 'none';
             }
         }
 
         // 按ESC键关闭弹窗
-        document.addEventListener('keydown', function(event) {
+        document.addEventListener('keydown', function (event) {
             if (event.key === 'Escape') {
                 document.querySelectorAll('.modal').forEach(modal => {
                     modal.style.display = 'none';
@@ -452,4 +492,5 @@
         });
     </script>
 </body>
-</html> 
+
+</html>

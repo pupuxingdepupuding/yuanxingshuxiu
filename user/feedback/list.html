@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户反馈管理</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" rel="stylesheet">
+    <link href="../../styles/common.css" rel="stylesheet">
+    <style>
+        /* 页面布局 */
+        .page-container {
+            padding: 20px;
+            background: #f5f5f5;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* 搜索区域 */
+        .search-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+
+        .search-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .search-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .search-label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        /* 按钮组样式 */
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* 表格区域 */
+        .table-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th,
+        .table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .table th {
+            background: #f8f9fa;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .table tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* 状态标签样式 */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background-color: #fff3e0;
+            color: #f57c00;
+        }
+
+        .status-processing {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .status-completed {
+            background-color: #e8f5e9;
+            color: #388e3c;
+        }
+
+        .status-rejected {
+            background-color: #ffebee;
+            color: #d32f2f;
+        }
+
+        /* 弹窗样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: relative;
+            background-color: #fff;
+            margin: 50px auto;
+            padding: 20px;
+            width: 800px;
+            max-width: 90%;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-close {
+            cursor: pointer;
+            font-size: 20px;
+            color: #666;
+        }
+
+        .modal-body {
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .required:after {
+            content: " *";
+            color: #dc3545;
+        }
+
+        /* 富文本编辑器样式 */
+        .editor-container {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .editor-toolbar {
+            border-bottom: 1px solid #ddd;
+            padding: 8px;
+            background: #f8f9fa;
+        }
+
+        .editor-content {
+            min-height: 200px;
+            padding: 16px;
+        }
+
+        /* 操作按钮样式 */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-buttons .btn {
+            padding: 4px 8px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .action-buttons .btn i {
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- 搜索区域 -->
+        <div class="search-container">
+            <div class="search-grid">
+                <div class="search-item">
+                    <label class="search-label">用户名</label>
+                    <input type="text" class="search-input" placeholder="请输入用户名">
+                </div>
+                <div class="search-item">
+                    <label class="search-label">姓名</label>
+                    <input type="text" class="search-input" placeholder="请输入姓名">
+                </div>
+                <div class="search-item">
+                    <label class="search-label">角色</label>
+                    <select class="search-input">
+                        <option value="">全部角色</option>
+                        <option value="admin">管理员</option>
+                        <option value="user">普通用户</option>
+                        <option value="editor">编辑</option>
+                    </select>
+                </div>
+                <div class="search-item">
+                    <label class="search-label">部门</label>
+                    <select class="search-input">
+                        <option value="">全部部门</option>
+                        <option value="tech">技术部</option>
+                        <option value="design">设计部</option>
+                        <option value="research">研究部</option>
+                    </select>
+                </div>
+                <div class="search-item">
+                    <label class="search-label">标签</label>
+                    <input type="text" class="search-input" placeholder="请输入标签">
+                </div>
+                <div class="search-item">
+                    <label class="search-label">反馈状态</label>
+                    <select class="search-input">
+                        <option value="">全部状态</option>
+                        <option value="pending">待处理</option>
+                        <option value="processing">处理中</option>
+                        <option value="completed">已完成</option>
+                        <option value="rejected">已驳回</option>
+                    </select>
+                </div>
+                <div class="search-item">
+                    <label class="search-label">反馈时间</label>
+                    <input type="date" class="search-input">
+                </div>
+            </div>
+            <div class="button-container">
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="searchFeedback()">
+                        <i class="fas fa-search"></i>搜索
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetSearch()">
+                        <i class="fas fa-redo"></i>重置
+                    </button>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="showFeedbackModal()">
+                        <i class="fas fa-plus"></i>新增反馈
+                    </button>
+                    <button class="btn btn-primary" onclick="exportFeedback()">
+                        <i class="fas fa-download"></i>导出
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 表格区域 -->
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>用户名</th>
+                        <th>姓名</th>
+                        <th>角色</th>
+                        <th>部门</th>
+                        <th>标签</th>
+                        <th>反馈状态</th>
+                        <th>反馈时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>zhangsan</td>
+                        <td>张三</td>
+                        <td>普通用户</td>
+                        <td>技术部</td>
+                        <td>功能建议,界面优化</td>
+                        <td>
+                            <span class="status-badge status-pending">待处理</span>
+                        </td>
+                        <td>2024-03-20 14:30</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-primary" onclick="showFeedbackModal('edit', 'F001')">
+                                    <i class="fas fa-edit"></i>编辑
+                                </button>
+                                <button class="btn btn-secondary" onclick="showFeedbackModal('detail', 'F001')">
+                                    <i class="fas fa-info-circle"></i>详情
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- 分页 -->
+            <div class="pagination">
+                <div class="pagination-info">
+                    显示第 <span class="font-medium">1</span> 到 <span class="font-medium">10</span> 条，共 <span class="font-medium">45</span> 条记录
+                </div>
+                <div class="pagination-buttons">
+                    <button class="pagination-button">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="pagination-button active">1</button>
+                    <button class="pagination-button">2</button>
+                    <button class="pagination-button">3</button>
+                    <button class="pagination-button">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 反馈弹窗 -->
+    <div class="modal" id="feedbackModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>反馈信息</h3>
+                <span class="modal-close" onclick="closeModal('feedbackModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="feedbackForm">
+                    <input type="hidden" name="feedbackId">
+                    <div class="form-group">
+                        <label class="required">用户名</label>
+                        <input type="text" class="form-control" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="required">姓名</label>
+                        <input type="text" class="form-control" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="required">角色</label>
+                        <select class="form-control" name="role" required>
+                            <option value="">请选择角色</option>
+                            <option value="admin">管理员</option>
+                            <option value="user">普通用户</option>
+                            <option value="editor">编辑</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="required">部门</label>
+                        <select class="form-control" name="department" required>
+                            <option value="">请选择部门</option>
+                            <option value="tech">技术部</option>
+                            <option value="design">设计部</option>
+                            <option value="research">研究部</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>标签</label>
+                        <input type="text" class="form-control" name="tags" placeholder="多个标签用逗号分隔">
+                    </div>
+                    <div class="form-group">
+                        <label class="required">反馈状态</label>
+                        <select class="form-control" name="status" required>
+                            <option value="pending">待处理</option>
+                            <option value="processing">处理中</option>
+                            <option value="completed">已完成</option>
+                            <option value="rejected">已驳回</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="required">反馈详情</label>
+                        <div id="editor" class="editor-container">
+                            <div class="editor-toolbar">
+                                <!-- 富文本编辑器工具栏将在这里初始化 -->
+                            </div>
+                            <div class="editor-content" contenteditable="true"></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('feedbackModal')">取消</button>
+                <button class="btn btn-primary" onclick="submitFeedback()" id="submitFeedbackBtn">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js"></script>
+    <script>
+        // 初始化富文本编辑器
+        tinymce.init({
+            selector: '#editor .editor-content',
+            height: 300,
+            menubar: false,
+            plugins: [
+                'advlist autolink lists link image charmap print preview anchor',
+                'searchreplace visualblocks code fullscreen',
+                'insertdatetime media table paste code help wordcount'
+            ],
+            toolbar: 'undo redo | formatselect | bold italic backcolor | \
+                     alignleft aligncenter alignright alignjustify | \
+                     bullist numlist outdent indent | removeformat | help'
+        });
+
+        // 显示反馈弹窗
+        function showFeedbackModal(type = 'add', feedbackId = null) {
+            const modal = document.getElementById('feedbackModal');
+            const form = document.getElementById('feedbackForm');
+            const submitBtn = document.getElementById('submitFeedbackBtn');
+            
+            // 设置标题和按钮
+            document.querySelector('.modal-header h3').textContent = 
+                type === 'edit' ? '编辑反馈' :
+                type === 'detail' ? '反馈详情' : '新增反馈';
+            
+            // 设置表单状态
+            const isDetail = type === 'detail';
+            form.querySelectorAll('input, select').forEach(input => {
+                input.disabled = isDetail;
+            });
+            submitBtn.style.display = isDetail ? 'none' : 'inline-block';
+            
+            if (feedbackId) {
+                // 编辑或详情模式，加载数据
+                // TODO: 根据feedbackId加载数据
+                const data = {
+                    username: 'zhangsan',
+                    name: '张三',
+                    role: 'user',
+                    department: 'tech',
+                    tags: '功能建议,界面优化',
+                    status: 'pending',
+                    content: '建议优化用户界面，增加更多自定义选项...'
+                };
+                
+                // 填充表单数据
+                form.elements.feedbackId.value = feedbackId;
+                form.elements.username.value = data.username;
+                form.elements.name.value = data.name;
+                form.elements.role.value = data.role;
+                form.elements.department.value = data.department;
+                form.elements.tags.value = data.tags;
+                form.elements.status.value = data.status;
+                
+                // 设置富文本编辑器内容
+                tinymce.get('editor').setContent(data.content);
+            } else {
+                // 新增模式，重置表单
+                form.reset();
+                form.elements.feedbackId.value = '';
+                tinymce.get('editor').setContent('');
+            }
+            
+            modal.style.display = 'block';
+        }
+
+        // 关闭弹窗
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // 提交反馈表单
+        function submitFeedback() {
+            const form = document.getElementById('feedbackForm');
+            if (!form.checkValidity()) {
+                Vue.prototype.$message.error('请填写必填字段！');
+                return;
+            }
+
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            data.content = tinymce.get('editor').getContent();
+            
+            console.log('提交反馈数据:', data);
+            
+            // TODO: 发送请求保存数据
+            
+            Vue.prototype.$message.success('保存成功！');
+            closeModal('feedbackModal');
+        }
+
+        // 搜索反馈
+        function searchFeedback() {
+            // TODO: 实现搜索逻辑
+            console.log('搜索反馈');
+        }
+
+        // 重置搜索
+        function resetSearch() {
+            document.querySelectorAll('.search-input').forEach(input => {
+                input.value = '';
+            });
+            searchFeedback();
+        }
+
+        // 导出反馈
+        function exportFeedback() {
+            // TODO: 实现导出逻辑
+            console.log('导出反馈');
+        }
+
+        // 点击页面其他区域关闭弹窗
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+
+        // 按ESC键关闭弹窗
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                document.querySelectorAll('.modal').forEach(modal => {
+                    modal.style.display = 'none';
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

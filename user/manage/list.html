@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户管理</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" rel="stylesheet">
+    <link href="../../styles/common.css" rel="stylesheet">
+    <style>
+        /* 页面布局 */
+        .page-container {
+            padding: 20px;
+            background: #f5f5f5;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* 搜索区域 */
+        .search-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+
+        .search-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .search-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .search-label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        /* 按钮组样式 */
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* 表格区域 */
+        .table-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th,
+        .table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .table th {
+            background: #f8f9fa;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .table tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* 状态标签样式 */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background-color: #e8f5e9;
+            color: #388e3c;
+        }
+
+        .status-inactive {
+            background-color: #ffebee;
+            color: #d32f2f;
+        }
+
+        /* 弹窗样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: relative;
+            background-color: #fff;
+            margin: 50px auto;
+            padding: 20px;
+            width: 600px;
+            max-width: 90%;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-close {
+            cursor: pointer;
+            font-size: 20px;
+            color: #666;
+        }
+
+        .modal-body {
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .required:after {
+            content: " *";
+            color: #dc3545;
+        }
+
+        /* 操作按钮样式 */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-buttons .btn {
+            padding: 4px 8px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .action-buttons .btn i {
+            font-size: 14px;
+        }
+
+        /* 角色和部门选择器样式 */
+        .select-tree {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .select-tree-item {
+            padding: 4px 8px;
+            cursor: pointer;
+            border-radius: 2px;
+        }
+
+        .select-tree-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        .select-tree-item.selected {
+            background-color: #e6f7ff;
+            color: #1890ff;
+        }
+
+        /* 复选框样式 */
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- 搜索区域 -->
+        <div class="search-container">
+            <div class="search-grid">
+                <div class="search-item">
+                    <label class="search-label">用户名</label>
+                    <input type="text" class="search-input" placeholder="请输入用户名">
+                </div>
+                <div class="search-item">
+                    <label class="search-label">姓名</label>
+                    <input type="text" class="search-input" placeholder="请输入姓名">
+                </div>
+                <div class="search-item">
+                    <label class="search-label">角色</label>
+                    <select class="search-input">
+                        <option value="">全部角色</option>
+                        <option value="admin">管理员</option>
+                        <option value="user">普通用户</option>
+                        <option value="editor">编辑</option>
+                    </select>
+                </div>
+            </div>
+            <div class="button-container">
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="searchUsers()">
+                        <i class="fas fa-search"></i>搜索
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetSearch()">
+                        <i class="fas fa-redo"></i>重置
+                    </button>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="showUserModal()">
+                        <i class="fas fa-plus"></i>新增用户
+                    </button>
+                    <button class="btn btn-primary" onclick="exportUsers()">
+                        <i class="fas fa-download"></i>导出
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 表格区域 -->
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>用户名</th>
+                        <th>姓名</th>
+                        <th>角色</th>
+                        <th>部门</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>zhangsan</td>
+                        <td>张三</td>
+                        <td>普通用户</td>
+                        <td>技术部</td>
+                        <td>
+                            <span class="status-badge status-active">启用</span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-primary" onclick="showUserModal('edit', 'U001')">
+                                    <i class="fas fa-edit"></i>编辑
+                                </button>
+                                <button class="btn btn-danger" onclick="deleteUser('U001')">
+                                    <i class="fas fa-trash"></i>删除
+                                </button>
+                                <button class="btn btn-secondary" onclick="toggleUserStatus('U001', false)">
+                                    <i class="fas fa-ban"></i>禁用
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- 分页 -->
+            <div class="pagination">
+                <div class="pagination-info">
+                    显示第 <span class="font-medium">1</span> 到 <span class="font-medium">10</span> 条，共 <span class="font-medium">45</span> 条记录
+                </div>
+                <div class="pagination-buttons">
+                    <button class="pagination-button">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="pagination-button active">1</button>
+                    <button class="pagination-button">2</button>
+                    <button class="pagination-button">3</button>
+                    <button class="pagination-button">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 用户弹窗 -->
+    <div class="modal" id="userModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>用户信息</h3>
+                <span class="modal-close" onclick="closeModal('userModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="userForm">
+                    <input type="hidden" name="userId">
+                    <div class="form-group">
+                        <label class="required">用户名</label>
+                        <input type="text" class="form-control" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="required">姓名</label>
+                        <input type="text" class="form-control" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="required">密码</label>
+                        <input type="password" class="form-control" name="password" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="required">确认密码</label>
+                        <input type="password" class="form-control" name="confirmPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="required">角色</label>
+                        <div class="select-tree" id="roleTree">
+                            <!-- 角色树形选择器将在这里初始化 -->
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="required">部门</label>
+                        <select class="form-control" name="department" required>
+                            <option value="">请选择部门</option>
+                            <option value="tech">技术部</option>
+                            <option value="design">设计部</option>
+                            <option value="research">研究部</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>状态</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="status" value="active" checked>
+                                启用
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('userModal')">取消</button>
+                <button class="btn btn-primary" onclick="submitUser()" id="submitUserBtn">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script>
+        // 初始化角色树形选择器
+        new Vue({
+            el: '#roleTree',
+            data: {
+                data: [{
+                    id: 1,
+                    label: '管理员',
+                    children: [{
+                        id: 11,
+                        label: '系统管理员'
+                    }, {
+                        id: 12,
+                        label: '内容管理员'
+                    }]
+                }, {
+                    id: 2,
+                    label: '普通用户',
+                    children: [{
+                        id: 21,
+                        label: '编辑'
+                    }, {
+                        id: 22,
+                        label: '访客'
+                    }]
+                }],
+                defaultProps: {
+                    children: 'children',
+                    label: 'label'
+                }
+            },
+            template: `
+                <el-tree
+                    :data="data"
+                    :props="defaultProps"
+                    show-checkbox
+                    node-key="id"
+                    default-expand-all>
+                </el-tree>
+            `
+        });
+
+        // 显示用户弹窗
+        function showUserModal(type = 'add', userId = null) {
+            const modal = document.getElementById('userModal');
+            const form = document.getElementById('userForm');
+            const submitBtn = document.getElementById('submitUserBtn');
+            
+            // 设置标题
+            document.querySelector('.modal-header h3').textContent = 
+                type === 'edit' ? '编辑用户' : '新增用户';
+            
+            if (userId) {
+                // 编辑模式，加载数据
+                // TODO: 根据userId加载数据
+                const data = {
+                    username: 'zhangsan',
+                    name: '张三',
+                    department: 'tech',
+                    status: 'active',
+                    roles: [11, 21] // 角色ID列表
+                };
+                
+                // 填充表单数据
+                form.elements.userId.value = userId;
+                form.elements.username.value = data.username;
+                form.elements.name.value = data.name;
+                form.elements.department.value = data.department;
+                form.elements.status.checked = data.status === 'active';
+                
+                // 设置角色树选中状态
+                const roleTree = document.querySelector('#roleTree .el-tree');
+                if (roleTree && roleTree.__vue__) {
+                    roleTree.__vue__.setCheckedKeys(data.roles);
+                }
+            } else {
+                // 新增模式，重置表单
+                form.reset();
+                form.elements.userId.value = '';
+                
+                // 重置角色树选中状态
+                const roleTree = document.querySelector('#roleTree .el-tree');
+                if (roleTree && roleTree.__vue__) {
+                    roleTree.__vue__.setCheckedKeys([]);
+                }
+            }
+            
+            modal.style.display = 'block';
+        }
+
+        // 关闭弹窗
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // 提交用户表单
+        function submitUser() {
+            const form = document.getElementById('userForm');
+            if (!form.checkValidity()) {
+                Vue.prototype.$message.error('请填写必填字段！');
+                return;
+            }
+
+            // 验证密码
+            if (form.elements.password.value !== form.elements.confirmPassword.value) {
+                Vue.prototype.$message.error('两次输入的密码不一致！');
+                return;
+            }
+
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            
+            // 获取选中的角色
+            const roleTree = document.querySelector('#roleTree .el-tree');
+            if (roleTree && roleTree.__vue__) {
+                data.roles = roleTree.__vue__.getCheckedKeys();
+            }
+            
+            console.log('提交用户数据:', data);
+            
+            // TODO: 发送请求保存数据
+            
+            Vue.prototype.$message.success('保存成功！');
+            closeModal('userModal');
+        }
+
+        // 搜索用户
+        function searchUsers() {
+            // TODO: 实现搜索逻辑
+            console.log('搜索用户');
+        }
+
+        // 重置搜索
+        function resetSearch() {
+            document.querySelectorAll('.search-input').forEach(input => {
+                input.value = '';
+            });
+            searchUsers();
+        }
+
+        // 删除用户
+        function deleteUser(userId) {
+            Vue.prototype.$confirm('确认删除此用户？', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                // TODO: 发送删除请求
+                console.log('删除用户:', userId);
+                Vue.prototype.$message.success('删除成功！');
+            }).catch(() => {
+                Vue.prototype.$message.info('已取消删除');
+            });
+        }
+
+        // 切换用户状态
+        function toggleUserStatus(userId, enable) {
+            const action = enable ? '启用' : '禁用';
+            Vue.prototype.$confirm(`确认${action}此用户？`, '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                // TODO: 发送状态更新请求
+                console.log(`${action}用户:`, userId);
+                Vue.prototype.$message.success(`${action}成功！`);
+            }).catch(() => {
+                Vue.prototype.$message.info(`已取消${action}`);
+            });
+        }
+
+        // 导出用户
+        function exportUsers() {
+            // TODO: 实现导出逻辑
+            console.log('导出用户');
+        }
+
+        // 点击页面其他区域关闭弹窗
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+
+        // 按ESC键关闭弹窗
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                document.querySelectorAll('.modal').forEach(modal => {
+                    modal.style.display = 'none';
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

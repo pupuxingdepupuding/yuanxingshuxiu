@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图案详情</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    <div class="p-6">
+        <!-- 返回按钮和标题 -->
+        <div class="flex items-center mb-6">
+            <button class="mr-4 text-gray-600 hover:text-gray-900">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1 class="text-2xl font-semibold text-gray-800">图案详情</h1>
+        </div>
+
+        <!-- 标签页导航 -->
+        <div class="border-b border-gray-200 mb-6">
+            <nav class="-mb-px flex space-x-8">
+                <button class="border-blue-500 text-blue-600 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    基本信息
+                </button>
+                <button class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    历史与文化背景
+                </button>
+                <button class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    图案属性
+                </button>
+                <button class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    媒体资料
+                </button>
+                <button class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    标签管理
+                </button>
+            </nav>
+        </div>
+
+        <!-- 基本信息内容 -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="grid grid-cols-2 gap-6">
+                <!-- 左侧图片展示 -->
+                <div class="space-y-4">
+                    <div class="aspect-w-1 aspect-h-1">
+                        <img src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809" alt="图案主图" class="w-full h-96 object-cover rounded-lg">
+                    </div>
+                    <div class="grid grid-cols-4 gap-2">
+                        <img src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809" alt="缩略图1" class="w-full h-20 object-cover rounded">
+                        <img src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809" alt="缩略图2" class="w-full h-20 object-cover rounded">
+                        <img src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809" alt="缩略图3" class="w-full h-20 object-cover rounded">
+                        <img src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809" alt="缩略图4" class="w-full h-20 object-cover rounded">
+                    </div>
+                </div>
+
+                <!-- 右侧信息表单 -->
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">图案ID</label>
+                            <div class="mt-1 text-sm text-gray-900">P001</div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">创建时间</label>
+                            <div class="mt-1 text-sm text-gray-900">2024-03-20 10:00:00</div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">图案名称</label>
+                        <div class="mt-1 text-sm text-gray-900">牡丹纹样</div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">图案别名</label>
+                        <div class="mt-1 text-sm text-gray-900">富贵牡丹</div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">图案类别</label>
+                            <div class="mt-1 text-sm text-gray-900">花卉纹</div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">图案类型</label>
+                            <div class="mt-1 text-sm text-gray-900">传统纹样</div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">标签</label>
+                        <div class="mt-2 flex flex-wrap gap-2">
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">传统</span>
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">花卉</span>
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">唐代</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">备注</label>
+                        <div class="mt-1 text-sm text-gray-900">
+                            这是一件唐代牡丹纹样，具有典型的唐代风格特征，常用于服饰和器物装饰。
+                        </div>
+                    </div>
+
+                    <!-- 版本信息 -->
+                    <div class="border-t border-gray-200 pt-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-sm font-medium text-gray-700">当前版本：</span>
+                                <span class="text-sm text-gray-900">v1.2</span>
+                            </div>
+                            <div class="space-x-2">
+                                <button class="text-sm text-blue-600 hover:text-blue-900">
+                                    <i class="fas fa-history mr-1"></i>版本历史
+                                </button>
+                                <button class="text-sm text-blue-600 hover:text-blue-900">
+                                    <i class="fas fa-undo mr-1"></i>版本回退
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 操作按钮 -->
+                    <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+                        <button class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+                            取消
+                        </button>
+                        <button class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
+                            保存修改
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

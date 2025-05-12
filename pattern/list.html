@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图案管理</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" rel="stylesheet">
+    <link href="../styles/common.css" rel="stylesheet">
+    <style>
+        /* 新增弹窗样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        .modal-content {
+            position: relative;
+            background-color: #fff;
+            margin: 50px auto;
+            padding: 20px;
+            width: 80%;
+            max-width: 800px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .modal-close {
+            cursor: pointer;
+            font-size: 20px;
+            color: #666;
+        }
+        .modal-body {
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        .form-control {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .upload-area {
+            margin-top: 20px;
+            padding: 20px;
+            border: 2px dashed #ddd;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .upload-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .modal-footer {
+            text-align: right;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        /* 详情弹窗样式 */
+        .detail-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        .detail-modal-content {
+            position: relative;
+            background-color: #fff;
+            margin: 30px auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 1200px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .detail-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .detail-tab {
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .detail-tab.active {
+            background-color: #1890ff;
+            color: white;
+        }
+        .detail-content {
+            display: none;
+        }
+        .detail-content.active {
+            display: block;
+        }
+
+        /* 功能按钮样式 */
+        .function-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-left: 10px;
+        }
+        .function-button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            background-color: #1890ff;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .function-button:hover {
+            background-color: #40a9ff;
+        }
+
+        /* 修改功能按钮容器样式 */
+        .function-buttons-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        .function-button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 4px;
+            background-color: #1890ff;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-align: left;
+            font-size: 14px;
+        }
+        .function-button:hover {
+            background-color: #40a9ff;
+        }
+        .function-button i {
+            margin-right: 8px;
+        }
+
+        /* 添加新的样式 */
+        .alert {
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .alert-warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* 添加下拉菜单样式 */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-toggle {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            border-radius: 4px;
+            z-index: 1000;
+            margin-top: 5px;
+        }
+        .dropdown-menu.show {
+            display: block;
+        }
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            color: #333;
+            text-decoration: none;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .dropdown-item:hover {
+            background-color: #f5f5f5;
+        }
+        .dropdown-item i {
+            width: 16px;
+            text-align: center;
+        }
+
+        /* 添加新的样式 */
+        .btn-info {
+            background-color: #17a2b8;
+            color: white;
+        }
+        .btn-info:hover {
+            background-color: #138496;
+        }
+        .btn-warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+        .file-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .file-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-height: 50px;
+        }
+        .file-preview-item {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .file-preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .file-preview-item .remove-btn {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        /* 历史背景表单样式 */
+        .history-form {
+            padding: 20px;
+        }
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-right: -10px;
+            margin-left: -10px;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            padding: 0 10px;
+            margin-bottom: 15px;
+        }
+        .col-md-6 {
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
+        .col-md-12 {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+        .required:after {
+            content: " *";
+            color: #dc3545;
+        }
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        .form-control:focus {
+            border-color: #80bdff;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
+        .upload-container {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            background-color: #f8f9fa;
+        }
+        .upload-area {
+            margin-bottom: 15px;
+        }
+        .upload-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .upload-tip {
+            color: #6c757d;
+            font-size: 0.875rem;
+            margin-top: 5px;
+        }
+        .upload-tip i {
+            margin-right: 5px;
+        }
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23343a40' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- 页面标题 -->
+        <h1 class="page-title">图案管理</h1>
+
+        <!-- 搜索区域 -->
+        <div class="search-container">
+            <!-- 搜索条件 -->
+            <div class="search-grid">
+                <div class="search-item">
+                    <label class="search-label">图案名称</label>
+                    <input type="text" class="search-input" placeholder="请输入图案名称">
+                </div>
+                <div class="search-item">
+                    <label class="search-label">图案类别</label>
+                    <select class="search-input">
+                        <option value="">全部类别</option>
+                        <option value="floral">花卉类</option>
+                        <option value="animal">动物类</option>
+                        <option value="geometric">几何类</option>
+                        <option value="character">人物类</option>
+                    </select>
+                </div>
+                <div class="search-item">
+                    <label class="search-label">年代</label>
+                    <select class="search-input">
+                        <option value="">全部年代</option>
+                        <option value="tang">唐代</option>
+                        <option value="song">宋代</option>
+                        <option value="ming">明代</option>
+                        <option value="qing">清代</option>
+                    </select>
+                </div>
+                <div class="search-item">
+                    <label class="search-label">地域/民族</label>
+                    <input type="text" class="search-input" placeholder="请输入地域或民族">
+                </div>
+            </div>
+
+            <!-- 按钮组 -->
+            <div class="button-container">
+                <div class="button-group">
+                    <button class="btn btn-primary">
+                        <i class="fas fa-search"></i>搜索
+                    </button>
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-redo"></i>重置
+                    </button>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="showAddModal()">
+                        <i class="fas fa-plus"></i>新增图案
+                    </button>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-file-import"></i>导入
+                    </button>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-download"></i>模板下载
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 表格区域 -->
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>图案名称</th>
+                        <th>图案类别</th>
+                        <th>图案类型</th>
+                        <th>年代</th>
+                        <th>地域/民族</th>
+                        <th>标签</th>
+                        <th>缩略图</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>牡丹纹样</td>
+                        <td>花卉类</td>
+                        <td>传统图案</td>
+                        <td>唐代</td>
+                        <td>中原</td>
+                        <td>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="tag tag-blue">花卉</span>
+                                <span class="tag tag-green">唐代</span>
+                                <span class="tag tag-yellow">中原</span>
+                            </div>
+                        </td>
+                        <td>
+                            <img src="../images/patterns/mudan.jpg" alt="牡丹纹样" class="thumbnail">
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-secondary" onclick="showDetailModal()">
+                                    <i class="fas fa-info-circle"></i>详情
+                                </button>
+                                <button class="btn btn-primary" onclick="showEditModal()">
+                                    <i class="fas fa-edit"></i>编辑
+                                </button>
+                                <button class="btn btn-danger" onclick="confirmDelete('P001')">
+                                    <i class="fas fa-trash"></i>删除
+                                </button>
+                                <button class="btn btn-info" onclick="showVersionModal('P001')">
+                                    <i class="fas fa-history"></i>版本管理
+                                </button>
+                                <button class="btn btn-warning" onclick="showVersionRollbackModal('P001')">
+                                    <i class="fas fa-undo"></i>版本回退
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- 分页 -->
+            <div class="pagination">
+                <div class="pagination-info">
+                    显示第 <span class="font-medium">1</span> 到 <span class="font-medium">10</span> 条，共 <span class="font-medium">45</span> 条记录
+                </div>
+                <div class="pagination-buttons">
+                    <button class="pagination-button">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="pagination-button active">1</button>
+                    <button class="pagination-button">2</button>
+                    <button class="pagination-button">3</button>
+                    <button class="pagination-button">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 新增图案弹窗 -->
+    <div class="modal" id="addModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>新增图案</h3>
+                <span class="modal-close" onclick="closeModal('addModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="addPatternForm">
+                    <div class="form-group">
+                        <label>图案名称</label>
+                        <input type="text" class="form-control" name="patternName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>图案别名</label>
+                        <input type="text" class="form-control" name="patternAlias">
+                    </div>
+                    <div class="form-group">
+                        <label>图案类别</label>
+                        <select class="form-control" name="patternCategory" required>
+                            <option value="">请选择类别</option>
+                            <option value="floral">花卉类</option>
+                            <option value="animal">动物类</option>
+                            <option value="geometric">几何类</option>
+                            <option value="character">人物类</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>图案类型</label>
+                        <select class="form-control" name="patternType" required>
+                            <option value="">请选择类型</option>
+                            <option value="traditional">传统图案</option>
+                            <option value="modern">现代图案</option>
+                            <option value="folk">民间图案</option>
+                            <option value="religious">宗教图案</option>
+                        </select>
+                    </div>
+                    <div class="upload-area">
+                        <h4>文件上传</h4>
+                        <div id="uploadArea">
+                            <!-- Element UI 上传组件将在这里初始化 -->
+                        </div>
+                        <div class="upload-buttons">
+                            <button type="button" class="btn btn-primary" onclick="initUploader()">
+                                <i class="fas fa-upload"></i>文件上传
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="startScanner()">
+                                <i class="fas fa-scanner"></i>扫描仪上传
+                            </button>
+                        </div>
+                    </div>
+                    <div class="function-buttons-container">
+                        <button type="button" class="function-button" onclick="showHistoryModal()">
+                            图案历史与文化背景
+                        </button>
+                        <button type="button" class="function-button" onclick="showAttributeModal()">
+                            图案本身属性
+                        </button>
+                        <button type="button" class="function-button" onclick="showMediaModal()">
+                            媒体与资料管理
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('addModal')">取消</button>
+                <button class="btn btn-primary" onclick="submitPattern()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 详情弹窗 -->
+    <div class="detail-modal" id="detailModal">
+        <div class="detail-modal-content">
+            <div class="modal-header">
+                <h3>图案详情</h3>
+                <span class="modal-close" onclick="closeModal('detailModal')">&times;</span>
+            </div>
+            <div class="detail-tabs">
+                <div class="detail-tab active" onclick="switchTab('basic')">基本信息</div>
+                <div class="detail-tab" onclick="switchTab('history')">图案历史与文化背景</div>
+                <div class="detail-tab" onclick="switchTab('attribute')">图案本身属性</div>
+                <div class="detail-tab" onclick="switchTab('media')">媒体与资料管理</div>
+            </div>
+            <div class="detail-content active" id="basicContent">
+                <!-- 基本信息内容 -->
+                <table class="table">
+                    <tr>
+                        <th>图案名称</th>
+                        <td>牡丹纹样</td>
+                        <th>图案别名</th>
+                        <td>富贵花</td>
+                    </tr>
+                    <tr>
+                        <th>图案类别</th>
+                        <td>花卉类</td>
+                        <th>图案类型</th>
+                        <td>传统图案</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="detail-content" id="historyContent">
+                <!-- 历史与文化背景内容 -->
+                <table class="table">
+                    <tr>
+                        <th>历史背景</th>
+                        <td>唐代盛行，象征富贵吉祥</td>
+                    </tr>
+                    <tr>
+                        <th>年代</th>
+                        <td>唐代</td>
+                    </tr>
+                    <tr>
+                        <th>地区/民族</th>
+                        <td>中原地区</td>
+                    </tr>
+                    <tr>
+                        <th>文化故事</th>
+                        <td>牡丹在中国传统文化中象征富贵...</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="detail-content" id="attributeContent">
+                <!-- 图案属性内容 -->
+                <table class="table">
+                    <tr>
+                        <th>图案风格</th>
+                        <td>写实风格</td>
+                    </tr>
+                    <tr>
+                        <th>尺寸/比例</th>
+                        <td>1:1</td>
+                    </tr>
+                    <tr>
+                        <th>纹理描述</th>
+                        <td>细腻流畅</td>
+                    </tr>
+                    <tr>
+                        <th>颜色</th>
+                        <td>
+                            <div class="flex gap-1">
+                                <span class="w-4 h-4 rounded-full bg-red-500"></span>
+                                <span class="w-4 h-4 rounded-full bg-pink-300"></span>
+                                <span class="w-4 h-4 rounded-full bg-green-500"></span>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="detail-content" id="mediaContent">
+                <!-- 媒体与资料内容 -->
+                <table class="table">
+                    <tr>
+                        <th>图像文件</th>
+                        <td>
+                            <div class="flex gap-2">
+                                <img src="../images/patterns/mudan_1.jpg" alt="牡丹纹样1" class="w-20 h-20 object-cover">
+                                <img src="../images/patterns/mudan_2.jpg" alt="牡丹纹样2" class="w-20 h-20 object-cover">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>图像描述</th>
+                        <td>高清扫描图，分辨率300dpi</td>
+                    </tr>
+                    <tr>
+                        <th>视频文件</th>
+                        <td>
+                            <video controls class="w-64">
+                                <source src="../videos/patterns/mudan.mp4" type="video/mp4">
+                            </video>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 历史背景弹窗 -->
+    <div class="modal" id="historyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>历史背景</h3>
+                <span class="modal-close" onclick="closeModal('historyModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="historyForm">
+                    <div class="form-group">
+                        <label>历史背景</label>
+                        <textarea class="form-control" name="historyBackground" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>年代</label>
+                        <select class="form-control" name="era" required>
+                            <option value="">请选择年代</option>
+                            <option value="tang">唐代</option>
+                            <option value="song">宋代</option>
+                            <option value="ming">明代</option>
+                            <option value="qing">清代</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>地区/民族</label>
+                        <select class="form-control" name="region" required>
+                            <option value="">请选择地区/民族</option>
+                            <option value="zhongyuan">中原</option>
+                            <option value="jiangnan">江南</option>
+                            <option value="xibei">西北</option>
+                            <option value="dongbei">东北</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>文化故事</label>
+                        <textarea class="form-control" name="culturalStory" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>相关文献</label>
+                        <textarea class="form-control" name="relatedLiterature" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>图案来源</label>
+                        <input type="text" class="form-control" name="patternSource">
+                    </div>
+                    <div class="upload-area">
+                        <h4>文件上传</h4>
+                        <div id="historyUploadArea">
+                            <!-- Element UI 上传组件将在这里初始化 -->
+                        </div>
+                        <div class="upload-buttons">
+                            <button type="button" class="btn btn-primary" onclick="initHistoryUploader()">
+                                <i class="fas fa-upload"></i>文件上传
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="startHistoryScanner()">
+                                <i class="fas fa-scanner"></i>扫描仪上传
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('historyModal')">取消</button>
+                <button class="btn btn-primary" onclick="submitHistory()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 图案属性弹窗 -->
+    <div class="modal" id="attributeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>图案属性</h3>
+                <span class="modal-close" onclick="closeModal('attributeModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="attributeForm">
+                    <div class="form-group">
+                        <label>图案ID</label>
+                        <input type="text" class="form-control" name="patternId" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>图案名称</label>
+                        <input type="text" class="form-control" name="patternName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>图案别名</label>
+                        <input type="text" class="form-control" name="patternAlias">
+                    </div>
+                    <div class="form-group">
+                        <label>图案类别</label>
+                        <select class="form-control" name="patternCategory" required>
+                            <option value="">请选择类别</option>
+                            <option value="floral">花卉类</option>
+                            <option value="animal">动物类</option>
+                            <option value="geometric">几何类</option>
+                            <option value="character">人物类</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>图案类型</label>
+                        <select class="form-control" name="patternType" required>
+                            <option value="">请选择类型</option>
+                            <option value="traditional">传统图案</option>
+                            <option value="modern">现代图案</option>
+                            <option value="folk">民间图案</option>
+                            <option value="religious">宗教图案</option>
+                        </select>
+                    </div>
+                    <div class="upload-area">
+                        <h4>文件上传</h4>
+                        <div id="attributeUploadArea">
+                            <!-- Element UI 上传组件将在这里初始化 -->
+                        </div>
+                        <div class="upload-buttons">
+                            <button type="button" class="btn btn-primary" onclick="initAttributeUploader()">
+                                <i class="fas fa-upload"></i>文件上传
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="startAttributeScanner()">
+                                <i class="fas fa-scanner"></i>扫描仪上传
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('attributeModal')">取消</button>
+                <button class="btn btn-primary" onclick="submitAttribute()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 媒体与资料弹窗 -->
+    <div class="modal" id="mediaModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>媒体与资料管理</h3>
+                <span class="modal-close" onclick="closeModal('mediaModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="mediaForm">
+                    <div class="form-group">
+                        <label>图案名称</label>
+                        <select class="form-control" name="patternName" required>
+                            <option value="">请选择图案</option>
+                            <option value="P001">牡丹纹样</option>
+                            <option value="P002">莲花纹样</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>图像文件</label>
+                        <div class="file-group">
+                            <div id="imageUploadArea">
+                                <!-- Element UI 上传组件将在这里初始化 -->
+                            </div>
+                            <div class="file-preview" id="imagePreview"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>图像描述</label>
+                        <textarea class="form-control" name="imageDescription" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>视频文件</label>
+                        <div class="file-group">
+                            <div id="videoUploadArea">
+                                <!-- Element UI 上传组件将在这里初始化 -->
+                            </div>
+                            <div class="file-preview" id="videoPreview"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>视频描述</label>
+                        <textarea class="form-control" name="videoDescription" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>音频资料</label>
+                        <div class="file-group">
+                            <div id="audioUploadArea">
+                                <!-- Element UI 上传组件将在这里初始化 -->
+                            </div>
+                            <div class="file-preview" id="audioPreview"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>三维模型</label>
+                        <div class="file-group">
+                            <div id="modelUploadArea">
+                                <!-- Element UI 上传组件将在这里初始化 -->
+                            </div>
+                            <div class="file-preview" id="modelPreview"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>缩略图</label>
+                        <div class="file-group">
+                            <div id="thumbnailUploadArea">
+                                <!-- Element UI 上传组件将在这里初始化 -->
+                            </div>
+                            <div class="file-preview" id="thumbnailPreview"></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('mediaModal')">取消</button>
+                <button class="btn btn-primary" onclick="submitMedia()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 版本管理弹窗 -->
+    <div class="modal" id="versionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>版本管理</h3>
+                <span class="modal-close" onclick="closeModal('versionModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" onclick="toggleAll(this)"></th>
+                            <th>版本名称</th>
+                            <th>版本描述</th>
+                            <th>上传时间</th>
+                            <th>上传人</th>
+                            <th>缩略图</th>
+                            <th>修改记录</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td>v1.0.0</td>
+                            <td>初始版本</td>
+                            <td>2024-03-20 10:00</td>
+                            <td>张三</td>
+                            <td>
+                                <img src="../images/patterns/mudan_v1.jpg" alt="版本缩略图" class="thumbnail">
+                            </td>
+                            <td>创建图案基本信息</td>
+                            <td>
+                                <button class="btn btn-secondary" onclick="viewVersionDetail('v1.0.0')">
+                                    <i class="fas fa-eye"></i>查看
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('versionModal')">取消</button>
+                <button class="btn btn-primary" onclick="confirmVersionOperation()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 版本回退弹窗 -->
+    <div class="modal" id="versionRollbackModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>版本回退</h3>
+                <span class="modal-close" onclick="closeModal('versionRollbackModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    注意：版本回退将覆盖当前版本的所有数据，请谨慎操作！
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>选择</th>
+                            <th>版本名称</th>
+                            <th>版本描述</th>
+                            <th>创建时间</th>
+                            <th>创建人</th>
+                            <th>缩略图</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input type="radio" name="versionSelect" value="v1.0.0">
+                            </td>
+                            <td>v1.0.0</td>
+                            <td>初始版本</td>
+                            <td>2024-03-20 10:00</td>
+                            <td>张三</td>
+                            <td>
+                                <img src="../images/patterns/mudan_v1.jpg" alt="版本缩略图" class="thumbnail">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('versionRollbackModal')">取消</button>
+                <button class="btn btn-danger" onclick="confirmVersionRollback()">确认回退</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 编辑弹窗 -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>编辑图案</h3>
+                <span class="modal-close" onclick="closeModal('editModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="editPatternForm">
+                    <div class="form-group">
+                        <label>图案名称</label>
+                        <input type="text" class="form-control" name="patternName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>图案别名</label>
+                        <input type="text" class="form-control" name="patternAlias">
+                    </div>
+                    <div class="form-group">
+                        <label>图案类别</label>
+                        <select class="form-control" name="patternCategory" required>
+                            <option value="">请选择类别</option>
+                            <option value="floral">花卉类</option>
+                            <option value="animal">动物类</option>
+                            <option value="geometric">几何类</option>
+                            <option value="character">人物类</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>图案类型</label>
+                        <select class="form-control" name="patternType" required>
+                            <option value="">请选择类型</option>
+                            <option value="traditional">传统图案</option>
+                            <option value="modern">现代图案</option>
+                            <option value="folk">民间图案</option>
+                            <option value="religious">宗教图案</option>
+                        </select>
+                    </div>
+                    <div class="upload-area">
+                        <h4>文件上传</h4>
+                        <div id="uploadArea">
+                            <!-- Element UI 上传组件将在这里初始化 -->
+                        </div>
+                        <div class="upload-buttons">
+                            <button type="button" class="btn btn-primary" onclick="initUploader()">
+                                <i class="fas fa-upload"></i>文件上传
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="startScanner()">
+                                <i class="fas fa-scanner"></i>扫描仪上传
+                            </button>
+                        </div>
+                    </div>
+                    <div class="function-buttons-container">
+                        <button type="button" class="function-button" onclick="showHistoryModal()">
+                            图案历史与文化背景
+                        </button>
+                        <button type="button" class="function-button" onclick="showAttributeModal()">
+                            图案本身属性
+                        </button>
+                        <button type="button" class="function-button" onclick="showMediaModal()">
+                            媒体与资料管理
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('editModal')">取消</button>
+                <button class="btn btn-primary" onclick="submitEdit()">确定</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script>
+        // 显示新增弹窗
+        function showAddModal() {
+            document.getElementById('addModal').style.display = 'block';
+        }
+
+        // 显示详情弹窗
+        function showDetailModal() {
+            document.getElementById('detailModal').style.display = 'block';
+        }
+
+        // 显示历史与文化背景弹窗
+        function showHistoryModal() {
+            document.getElementById('historyModal').style.display = 'block';
+        }
+
+        // 显示图案属性弹窗
+        function showAttributeModal() {
+            document.getElementById('attributeModal').style.display = 'block';
+        }
+
+        // 显示媒体与资料管理弹窗
+        function showMediaModal() {
+            document.getElementById('mediaModal').style.display = 'block';
+        }
+
+        // 显示编辑弹窗
+        function showEditModal() {
+            document.getElementById('editModal').style.display = 'block';
+        }
+
+        // 显示版本管理弹窗
+        function showVersionModal(patternId) {
+            // 关闭下拉菜单
+            document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+                menu.classList.remove('show');
+            });
+            
+            // 显示版本管理弹窗
+            const modal = document.getElementById('versionModal');
+            modal.style.display = 'block';
+            
+            // TODO: 根据patternId加载对应的版本数据
+            console.log('显示图案版本管理:', patternId);
+        }
+
+        // 显示版本回退弹窗
+        function showVersionRollbackModal(patternId) {
+            // 关闭下拉菜单
+            document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+                menu.classList.remove('show');
+            });
+            
+            // 显示版本回退弹窗
+            const modal = document.getElementById('versionRollbackModal');
+            modal.style.display = 'block';
+            
+            // TODO: 根据patternId加载对应的版本数据
+            console.log('显示图案版本回退:', patternId);
+        }
+
+        // 关闭弹窗
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // 切换详情标签页
+        function switchTab(tabName) {
+            // 移除所有标签页的active类
+            document.querySelectorAll('.detail-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.detail-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // 为当前标签页添加active类
+            document.querySelector(`.detail-tab[onclick="switchTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(`${tabName}Content`).classList.add('active');
+        }
+
+        // 全选/取消全选
+        function toggleAll(checkbox) {
+            const table = checkbox.closest('table');
+            const checkboxes = table.querySelectorAll('tbody input[type="checkbox"]');
+            checkboxes.forEach(item => {
+                item.checked = checkbox.checked;
+            });
+        }
+
+        // 初始化文件上传组件
+        function initUploader() {
+            new Vue({
+                el: '#uploadArea',
+                data: {
+                    fileList: []
+                },
+                methods: {
+                    handleSuccess(response, file, fileList) {
+                        this.fileList = fileList;
+                    },
+                    handleRemove(file, fileList) {
+                        this.fileList = fileList;
+                    }
+                },
+                template: `
+                    <el-upload
+                        action="/api/upload"
+                        :on-success="handleSuccess"
+                        :on-remove="handleRemove"
+                        :file-list="fileList"
+                        multiple>
+                        <el-button size="small" type="primary">点击上传</el-button>
+                        <div slot="tip" class="el-upload__tip">支持jpg/png/pdf等格式文件</div>
+                    </el-upload>
+                `
+            });
+        }
+
+        // 启动扫描仪
+        function startScanner() {
+            // 这里添加扫描仪相关代码
+            alert('正在连接扫描仪...');
+        }
+
+        // 提交图案表单
+        function submitPattern() {
+            // 这里添加表单提交逻辑
+            const form = document.getElementById('addPatternForm');
+            if (form.checkValidity()) {
+                // 提交表单
+                alert('保存成功！');
+                closeModal('addModal');
+            } else {
+                alert('请填写必填字段！');
+            }
+        }
+
+        // 确认删除
+        function confirmDelete(patternId) {
+            if (confirm('确定要删除该图案吗？此操作不可恢复！')) {
+                // 执行删除操作
+                console.log('删除图案:', patternId);
+                // TODO: 调用删除API
+            }
+        }
+
+        // 查看版本详情
+        function viewVersionDetail(versionId) {
+            // TODO: 实现版本详情查看功能
+            console.log('查看版本详情:', versionId);
+        }
+
+        // 确认版本操作
+        function confirmVersionOperation() {
+            // TODO: 实现版本操作确认功能
+            closeModal('versionModal');
+        }
+
+        // 确认版本回退
+        function confirmVersionRollback() {
+            const selectedVersion = document.querySelector('input[name="versionSelect"]:checked');
+            if (!selectedVersion) {
+                alert('请选择要回退的版本！');
+                return;
+            }
+            
+            if (confirm('确定要回退到该版本吗？当前版本的数据将被覆盖！')) {
+                // TODO: 实现版本回退功能
+                console.log('回退到版本:', selectedVersion.value);
+                closeModal('versionRollbackModal');
+            }
+        }
+
+        // 提交编辑
+        function submitEdit() {
+            const form = document.getElementById('editPatternForm');
+            if (form.checkValidity()) {
+                // TODO: 实现编辑提交功能
+                console.log('提交编辑');
+                closeModal('editModal');
+            } else {
+                alert('请填写必填字段！');
+            }
+        }
+
+        // 点击弹窗外部关闭弹窗
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal') || event.target.classList.contains('detail-modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+
+        // 按ESC键关闭弹窗
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                document.querySelectorAll('.modal, .detail-modal').forEach(modal => {
+                    modal.style.display = 'none';
+                });
+            }
+        });
+
+        // 切换版本下拉菜单
+        function toggleVersionDropdown(button) {
+            const dropdownMenu = button.nextElementSibling;
+            dropdownMenu.classList.toggle('show');
+            
+            // 点击其他地方关闭下拉菜单
+            document.addEventListener('click', function closeDropdown(e) {
+                if (!button.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                    dropdownMenu.classList.remove('show');
+                    document.removeEventListener('click', closeDropdown);
+                }
+            });
+        }
+
+        // 初始化历史背景上传组件
+        function initHistoryUploader() {
+            new Vue({
+                el: '#historyUploadArea',
+                data: {
+                    fileList: []
+                },
+                methods: {
+                    handleSuccess(response, file, fileList) {
+                        this.fileList = fileList;
+                    },
+                    handleRemove(file, fileList) {
+                        this.fileList = fileList;
+                    }
+                },
+                template: `
+                    <el-upload
+                        action="/api/upload/history"
+                        :on-success="handleSuccess"
+                        :on-remove="handleRemove"
+                        :file-list="fileList"
+                        multiple>
+                        <el-button size="small" type="primary">点击上传</el-button>
+                        <div slot="tip" class="el-upload__tip">支持jpg/png/pdf等格式文件</div>
+                    </el-upload>
+                `
+            });
+        }
+
+        // 初始化图案属性上传组件
+        function initAttributeUploader() {
+            new Vue({
+                el: '#attributeUploadArea',
+                data: {
+                    fileList: []
+                },
+                methods: {
+                    handleSuccess(response, file, fileList) {
+                        this.fileList = fileList;
+                    },
+                    handleRemove(file, fileList) {
+                        this.fileList = fileList;
+                    }
+                },
+                template: `
+                    <el-upload
+                        action="/api/upload/attribute"
+                        :on-success="handleSuccess"
+                        :on-remove="handleRemove"
+                        :file-list="fileList"
+                        multiple>
+                        <el-button size="small" type="primary">点击上传</el-button>
+                        <div slot="tip" class="el-upload__tip">支持jpg/png/pdf等格式文件</div>
+                    </el-upload>
+                `
+            });
+        }
+
+        // 初始化媒体上传组件
+        function initMediaUploaders() {
+            // 图像上传
+            new Vue({
+                el: '#imageUploadArea',
+                data: {
+                    fileList: []
+                },
+                methods: {
+                    handleSuccess(response, file, fileList) {
+                        this.fileList = fileList;
+                        updateFilePreview('imagePreview', file);
+                    },
+                    handleRemove(file, fileList) {
+                        this.fileList = fileList;
+                        removeFilePreview('imagePreview', file);
+                    }
+                },
+                template: `
+                    <el-upload
+                        action="/api/upload/image"
+                        :on-success="handleSuccess"
+                        :on-remove="handleRemove"
+                        :file-list="fileList"
+                        accept="image/*"
+                        multiple>
+                        <el-button size="small" type="primary">上传图像</el-button>
+                    </el-upload>
+                `
+            });
+
+            // 视频上传
+            new Vue({
+                el: '#videoUploadArea',
+                data: {
+                    fileList: []
+                },
+                methods: {
+                    handleSuccess(response, file, fileList) {
+                        this.fileList = fileList;
+                        updateFilePreview('videoPreview', file);
+                    },
+                    handleRemove(file, fileList) {
+                        this.fileList = fileList;
+                        removeFilePreview('videoPreview', file);
+                    }
+                },
+                template: `
+                    <el-upload
+                        action="/api/upload/video"
+                        :on-success="handleSuccess"
+                        :on-remove="handleRemove"
+                        :file-list="fileList"
+                        accept="video/*"
+                        multiple>
+                        <el-button size="small" type="primary">上传视频</el-button>
+                    </el-upload>
+                `
+            });
+
+            // 其他上传组件类似...
+        }
+
+        // 更新文件预览
+        function updateFilePreview(previewId, file) {
+            const preview = document.getElementById(previewId);
+            const item = document.createElement('div');
+            item.className = 'file-preview-item';
+            
+            if (file.type.startsWith('image/')) {
+                const img = document.createElement('img');
+                img.src = URL.createObjectURL(file);
+                item.appendChild(img);
+            } else {
+                item.textContent = file.name;
+            }
+            
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-btn';
+            removeBtn.innerHTML = '×';
+            removeBtn.onclick = () => {
+                item.remove();
+                // TODO: 调用相应的删除API
+            };
+            
+            item.appendChild(removeBtn);
+            preview.appendChild(item);
+        }
+
+        // 移除文件预览
+        function removeFilePreview(previewId, file) {
+            const preview = document.getElementById(previewId);
+            const items = preview.getElementsByClassName('file-preview-item');
+            for (let item of items) {
+                if (item.textContent === file.name) {
+                    item.remove();
+                    break;
+                }
+            }
+        }
+
+        // 提交历史背景表单
+        function submitHistory() {
+            const form = document.getElementById('historyForm');
+            if (form.checkValidity()) {
+                // TODO: 实现提交逻辑
+                console.log('提交历史背景');
+                closeModal('historyModal');
+            } else {
+                alert('请填写必填字段！');
+            }
+        }
+
+        // 提交图案属性表单
+        function submitAttribute() {
+            const form = document.getElementById('attributeForm');
+            if (form.checkValidity()) {
+                // TODO: 实现提交逻辑
+                console.log('提交图案属性');
+                closeModal('attributeModal');
+            } else {
+                alert('请填写必填字段！');
+            }
+        }
+
+        // 提交媒体资料表单
+        function submitMedia() {
+            const form = document.getElementById('mediaForm');
+            if (form.checkValidity()) {
+                // TODO: 实现提交逻辑
+                console.log('提交媒体资料');
+                closeModal('mediaModal');
+            } else {
+                alert('请填写必填字段！');
+            }
+        }
+
+        // 启动扫描仪
+        function startHistoryScanner() {
+            // TODO: 实现扫描仪功能
+            alert('正在连接扫描仪...');
+        }
+
+        // 启动扫描仪
+        function startAttributeScanner() {
+            // TODO: 实现扫描仪功能
+            alert('正在连接扫描仪...');
+        }
+
+        // 页面加载完成后初始化上传组件
+        document.addEventListener('DOMContentLoaded', function() {
+            initMediaUploaders();
+        });
+
+        // 显示新增历史背景弹窗
+        function showAddHistoryModal() {
+            document.getElementById('addHistoryModal').style.display = 'block';
+        }
+
+        // 显示编辑历史背景弹窗
+        function showEditHistoryModal(historyId) {
+            const modal = document.getElementById('editHistoryModal');
+            const form = document.getElementById('editHistoryForm');
+            
+            // TODO: 根据historyId加载数据
+            // 模拟加载数据
+            form.elements.historyId.value = historyId;
+            form.elements.patternName.value = 'P001';
+            form.elements.historyBackground.value = '唐代盛行，象征富贵吉祥';
+            form.elements.era.value = 'sui-tang';
+            form.elements.region.value = 'zhongyuan';
+            form.elements.culturalStory.value = '牡丹在中国传统文化中象征富贵...';
+            form.elements.relatedLiterature.value = '《唐代纹样研究》';
+            form.elements.patternSource.value = '出土文物';
+            
+            modal.style.display = 'block';
+        }
+
+        // 初始化新增历史背景上传组件
+        function initAddHistoryUploader() {
+            new Vue({
+                el: '#addHistoryUploadArea',
+                data: {
+                    fileList: []
+                },
+                methods: {
+                    handleSuccess(response, file, fileList) {
+                        this.fileList = fileList;
+                        this.$message.success('文件上传成功');
+                    },
+                    handleError(err, file, fileList) {
+                        this.$message.error('文件上传失败');
+                    },
+                    handleRemove(file, fileList) {
+                        this.fileList = fileList;
+                    }
+                },
+                template: `
+                    <el-upload
+                        action="/api/upload/history"
+                        :on-success="handleSuccess"
+                        :on-error="handleError"
+                        :on-remove="handleRemove"
+                        :file-list="fileList"
+                        multiple>
+                        <el-button size="small" type="primary">点击上传</el-button>
+                        <div slot="tip" class="el-upload__tip">支持jpg/png/pdf等格式文件</div>
+                    </el-upload>
+                `
+            });
+        }
+
+        // 初始化编辑历史背景上传组件
+        function initEditHistoryUploader() {
+            new Vue({
+                el: '#editHistoryUploadArea',
+                data: {
+                    fileList: []
+                },
+                methods: {
+                    handleSuccess(response, file, fileList) {
+                        this.fileList = fileList;
+                        this.$message.success('文件上传成功');
+                    },
+                    handleError(err, file, fileList) {
+                        this.$message.error('文件上传失败');
+                    },
+                    handleRemove(file, fileList) {
+                        this.fileList = fileList;
+                    }
+                },
+                template: `
+                    <el-upload
+                        action="/api/upload/history"
+                        :on-success="handleSuccess"
+                        :on-error="handleError"
+                        :on-remove="handleRemove"
+                        :file-list="fileList"
+                        multiple>
+                        <el-button size="small" type="primary">点击上传</el-button>
+                        <div slot="tip" class="el-upload__tip">支持jpg/png/pdf等格式文件</div>
+                    </el-upload>
+                `
+            });
+        }
+
+        // 提交新增历史背景
+        function submitAddHistory() {
+            const form = document.getElementById('addHistoryForm');
+            if (!form.checkValidity()) {
+                Vue.prototype.$message.error('请填写必填字段！');
+                return;
+            }
+
+            // TODO: 实现提交逻辑
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            console.log('提交新增历史背景:', data);
+            
+            Vue.prototype.$message.success('保存成功！');
+            closeModal('addHistoryModal');
+        }
+
+        // 提交编辑历史背景
+        function submitEditHistory() {
+            const form = document.getElementById('editHistoryForm');
+            if (!form.checkValidity()) {
+                Vue.prototype.$message.error('请填写必填字段！');
+                return;
+            }
+
+            // TODO: 实现提交逻辑
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            console.log('提交编辑历史背景:', data);
+            
+            Vue.prototype.$message.success('保存成功！');
+            closeModal('editHistoryModal');
+        }
+
+        // 确认删除历史背景
+        function confirmDeleteHistory(historyId) {
+            Vue.prototype.$confirm('确定要删除该历史背景记录吗？此操作不可恢复！', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                // TODO: 实现删除逻辑
+                console.log('删除历史背景:', historyId);
+                Vue.prototype.$message.success('删除成功！');
+            }).catch(() => {
+                Vue.prototype.$message.info('已取消删除');
+            });
+        }
+    </script>
+</body>
+</html> 

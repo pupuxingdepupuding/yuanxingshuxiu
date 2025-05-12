@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户管理</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="../styles/common.css" rel="stylesheet">
+</head>
+<body>
+    <div class="page-container">
+        <!-- 页面标题 -->
+        <h1 class="page-title">用户管理</h1>
+
+        <!-- 搜索区域 -->
+        <div class="search-container">
+            <!-- 搜索条件 -->
+            <div class="search-grid">
+                <div class="search-item">
+                    <label class="search-label">用户名</label>
+                    <input type="text" class="search-input" placeholder="请输入用户名">
+                </div>
+                <div class="search-item">
+                    <label class="search-label">姓名</label>
+                    <input type="text" class="search-input" placeholder="请输入姓名">
+                </div>
+                <div class="search-item">
+                    <label class="search-label">角色</label>
+                    <select class="search-input">
+                        <option value="">全部角色</option>
+                        <option value="admin">管理员</option>
+                        <option value="editor">编辑员</option>
+                        <option value="viewer">访客</option>
+                    </select>
+                </div>
+                <div class="search-item">
+                    <label class="search-label">部门</label>
+                    <select class="search-input">
+                        <option value="">全部部门</option>
+                        <option value="research">研究部</option>
+                        <option value="design">设计部</option>
+                        <option value="archive">档案部</option>
+                    </select>
+                </div>
+                <div class="search-item">
+                    <label class="search-label">状态</label>
+                    <select class="search-input">
+                        <option value="">全部状态</option>
+                        <option value="active">正常</option>
+                        <option value="locked">锁定</option>
+                        <option value="disabled">禁用</option>
+                    </select>
+                </div>
+                <div class="search-item">
+                    <label class="search-label">注册时间</label>
+                    <input type="date" class="search-input">
+                </div>
+                <div class="search-item">
+                    <label class="search-label">最后登录</label>
+                    <input type="date" class="search-input">
+                </div>
+                <div class="search-item">
+                    <label class="search-label">邮箱</label>
+                    <input type="email" class="search-input" placeholder="请输入邮箱">
+                </div>
+            </div>
+
+            <!-- 按钮组 -->
+            <div class="button-container">
+                <div class="button-group">
+                    <button class="btn btn-primary">
+                        <i class="fas fa-search"></i>搜索
+                    </button>
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-redo"></i>重置
+                    </button>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-primary">
+                        <i class="fas fa-plus"></i>新增用户
+                    </button>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-file-import"></i>导入
+                    </button>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-download"></i>导出
+                    </button>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-key"></i>重置密码
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 表格区域 -->
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>用户名</th>
+                        <th>姓名</th>
+                        <th>角色</th>
+                        <th>部门</th>
+                        <th>状态</th>
+                        <th>注册时间</th>
+                        <th>最后登录</th>
+                        <th>邮箱</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>admin001</td>
+                        <td>张三</td>
+                        <td>
+                            <span class="tag tag-blue">管理员</span>
+                        </td>
+                        <td>研究部</td>
+                        <td>
+                            <span class="status-badge status-active">正常</span>
+                        </td>
+                        <td>2024-01-15</td>
+                        <td>2024-03-20 14:30</td>
+                        <td>zhangsan@example.com</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-edit"></i>编辑
+                                </button>
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-key"></i>改密
+                                </button>
+                                <button class="btn btn-secondary text-red-600">
+                                    <i class="fas fa-trash"></i>删除
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>editor001</td>
+                        <td>李四</td>
+                        <td>
+                            <span class="tag tag-green">编辑员</span>
+                        </td>
+                        <td>设计部</td>
+                        <td>
+                            <span class="status-badge status-locked">锁定</span>
+                        </td>
+                        <td>2024-02-01</td>
+                        <td>2024-03-19 09:15</td>
+                        <td>lisi@example.com</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-edit"></i>编辑
+                                </button>
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-key"></i>改密
+                                </button>
+                                <button class="btn btn-secondary text-red-600">
+                                    <i class="fas fa-trash"></i>删除
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- 分页 -->
+            <div class="pagination">
+                <div class="pagination-info">
+                    显示第 <span class="font-medium">1</span> 到 <span class="font-medium">10</span> 条，共 <span class="font-medium">28</span> 条记录
+                </div>
+                <div class="pagination-buttons">
+                    <button class="pagination-button">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="pagination-button active">1</button>
+                    <button class="pagination-button">2</button>
+                    <button class="pagination-button">3</button>
+                    <button class="pagination-button">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

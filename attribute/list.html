@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图案属性管理</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" rel="stylesheet">
+    <link href="../styles/common.css" rel="stylesheet">
+    <style>
+        /* 图案属性管理页面样式 */
+        .required:after {
+            content: " *";
+            color: #dc3545;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        .action-buttons .btn {
+            padding: 4px 8px;
+            font-size: 14px;
+        }
+        .table td {
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .table td i {
+            margin-right: 8px;
+            color: #666;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        .modal-content {
+            position: relative;
+            background-color: #fff;
+            margin: 50px auto;
+            padding: 20px;
+            width: 80%;
+            max-width: 800px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .modal-close {
+            cursor: pointer;
+            font-size: 20px;
+            color: #666;
+        }
+        .modal-body {
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        .form-control {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .form-control[readonly] {
+            background-color: #f8f9fa;
+            cursor: not-allowed;
+        }
+        .upload-area {
+            margin-top: 20px;
+            padding: 20px;
+            border: 2px dashed #ddd;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .upload-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .modal-footer {
+            text-align: right;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <h1 class="page-title">图案属性管理</h1>
+
+        <!-- 搜索区域 -->
+        <div class="search-container">
+            <div class="search-grid">
+                <div class="search-item">
+                    <label class="search-label">图案名称</label>
+                    <input type="text" class="search-input" placeholder="请输入图案名称">
+                </div>
+                <div class="search-item">
+                    <label class="search-label">图案类别</label>
+                    <select class="search-input">
+                        <option value="">全部类别</option>
+                        <option value="floral">花卉类</option>
+                        <option value="animal">动物类</option>
+                        <option value="geometric">几何类</option>
+                        <option value="character">人物类</option>
+                    </select>
+                </div>
+                <div class="search-item">
+                    <label class="search-label">图案类型</label>
+                    <select class="search-input">
+                        <option value="">全部类型</option>
+                        <option value="traditional">传统图案</option>
+                        <option value="modern">现代图案</option>
+                        <option value="folk">民间图案</option>
+                        <option value="religious">宗教图案</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 按钮组 -->
+            <div class="button-container">
+                <div class="button-group">
+                    <button class="btn btn-primary">
+                        <i class="fas fa-search"></i>搜索
+                    </button>
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-redo"></i>重置
+                    </button>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="showAttributeModal()">
+                        <i class="fas fa-plus"></i>新增属性
+                    </button>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-file-import"></i>导入
+                    </button>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-download"></i>模板下载
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 表格区域 -->
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>图案ID</th>
+                        <th>图案名称</th>
+                        <th>图案别名</th>
+                        <th>图案类别</th>
+                        <th>图案类型</th>
+                        <th>附件</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>P001</td>
+                        <td>牡丹纹样</td>
+                        <td>富贵花</td>
+                        <td>花卉类</td>
+                        <td>传统图案</td>
+                        <td>
+                            <i class="fas fa-file-pdf"></i>
+                            <i class="fas fa-file-image"></i>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-primary" onclick="showAttributeModal('P001')">
+                                    <i class="fas fa-edit"></i>编辑
+                                </button>
+                                <button class="btn btn-danger" onclick="confirmDelete('P001')">
+                                    <i class="fas fa-trash"></i>删除
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- 分页 -->
+            <div class="pagination">
+                <div class="pagination-info">
+                    显示第 <span class="font-medium">1</span> 到 <span class="font-medium">10</span> 条，共 <span class="font-medium">45</span> 条记录
+                </div>
+                <div class="pagination-buttons">
+                    <button class="pagination-button">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="pagination-button active">1</button>
+                    <button class="pagination-button">2</button>
+                    <button class="pagination-button">3</button>
+                    <button class="pagination-button">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 图案属性弹窗 -->
+    <div class="modal" id="attributeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>图案属性</h3>
+                <span class="modal-close" onclick="closeModal('attributeModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="attributeForm">
+                    <input type="hidden" name="patternId">
+                    <div class="form-group">
+                        <label>图案ID</label>
+                        <input type="text" class="form-control" name="displayPatternId" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label class="required">图案名称</label>
+                        <input type="text" class="form-control" name="patternName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>图案别名</label>
+                        <input type="text" class="form-control" name="patternAlias">
+                    </div>
+                    <div class="form-group">
+                        <label class="required">图案类别</label>
+                        <select class="form-control" name="patternCategory" required>
+                            <option value="">请选择类别</option>
+                            <option value="floral">花卉类</option>
+                            <option value="animal">动物类</option>
+                            <option value="geometric">几何类</option>
+                            <option value="character">人物类</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="required">图案类型</label>
+                        <select class="form-control" name="patternType" required>
+                            <option value="">请选择类型</option>
+                            <option value="traditional">传统图案</option>
+                            <option value="modern">现代图案</option>
+                            <option value="folk">民间图案</option>
+                            <option value="religious">宗教图案</option>
+                        </select>
+                    </div>
+                    <div class="upload-area">
+                        <h4>文件上传</h4>
+                        <div id="attributeUploadArea">
+                            <!-- Element UI 上传组件将在这里初始化 -->
+                        </div>
+                        <div class="upload-buttons">
+                            <button type="button" class="btn btn-primary" onclick="initAttributeUploader()">
+                                <i class="fas fa-upload"></i>文件上传
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="startAttributeScanner()">
+                                <i class="fas fa-scanner"></i>扫描仪上传
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('attributeModal')">取消</button>
+                <button class="btn btn-primary" onclick="submitAttribute()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script>
+        // 显示图案属性弹窗
+        function showAttributeModal(patternId) {
+            const modal = document.getElementById('attributeModal');
+            const form = document.getElementById('attributeForm');
+            
+            if (patternId) {
+                // 编辑模式
+                document.querySelector('.modal-header h3').textContent = '编辑图案属性';
+                // TODO: 根据patternId加载数据
+                form.elements.patternId.value = patternId;
+                form.elements.displayPatternId.value = patternId;
+                form.elements.patternName.value = '牡丹纹样';
+                form.elements.patternAlias.value = '富贵花';
+                form.elements.patternCategory.value = 'floral';
+                form.elements.patternType.value = 'traditional';
+            } else {
+                // 新增模式
+                document.querySelector('.modal-header h3').textContent = '新增图案属性';
+                form.reset();
+                form.elements.patternId.value = '';
+                form.elements.displayPatternId.value = '自动生成';
+            }
+            
+            modal.style.display = 'block';
+        }
+
+        // 关闭弹窗
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // 初始化图案属性上传组件
+        function initAttributeUploader() {
+            new Vue({
+                el: '#attributeUploadArea',
+                data: {
+                    fileList: []
+                },
+                methods: {
+                    handleSuccess(response, file, fileList) {
+                        this.fileList = fileList;
+                        this.$message.success('文件上传成功');
+                    },
+                    handleError(err, file, fileList) {
+                        this.$message.error('文件上传失败');
+                    },
+                    handleRemove(file, fileList) {
+                        this.fileList = fileList;
+                    }
+                },
+                template: `
+                    <el-upload
+                        action="/api/upload/attribute"
+                        :on-success="handleSuccess"
+                        :on-error="handleError"
+                        :on-remove="handleRemove"
+                        :file-list="fileList"
+                        multiple>
+                        <el-button size="small" type="primary">点击上传</el-button>
+                        <div slot="tip" class="el-upload__tip">支持jpg/png/pdf等格式文件</div>
+                    </el-upload>
+                `
+            });
+        }
+
+        // 启动扫描仪
+        function startAttributeScanner() {
+            // TODO: 实现扫描仪功能
+            Vue.prototype.$message.info('正在连接扫描仪...');
+        }
+
+        // 提交图案属性表单
+        function submitAttribute() {
+            const form = document.getElementById('attributeForm');
+            if (!form.checkValidity()) {
+                Vue.prototype.$message.error('请填写必填字段！');
+                return;
+            }
+
+            // TODO: 实现提交逻辑
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            console.log('提交图案属性:', data);
+            
+            Vue.prototype.$message.success('保存成功！');
+            closeModal('attributeModal');
+        }
+
+        // 确认删除
+        function confirmDelete(patternId) {
+            Vue.prototype.$confirm('确定要删除该图案属性记录吗？此操作不可恢复！', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                // TODO: 实现删除逻辑
+                console.log('删除图案属性:', patternId);
+                Vue.prototype.$message.success('删除成功！');
+            }).catch(() => {
+                Vue.prototype.$message.info('已取消删除');
+            });
+        }
+
+        // 点击弹窗外部关闭弹窗
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+
+        // 按ESC键关闭弹窗
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                document.querySelectorAll('.modal').forEach(modal => {
+                    modal.style.display = 'none';
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

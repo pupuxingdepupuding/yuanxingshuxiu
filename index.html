@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图案数据管理系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .sidebar-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .content-frame {
+            height: calc(100vh - 64px);
+        }
+    </style>
+  </head>
+  <body class="bg-gray-100">
+    <!-- 顶部导航栏 -->
+    <nav class="bg-white shadow-lg h-16 fixed w-full z-10">
+        <div class="container mx-auto px-4 h-full flex items-center justify-between">
+            <div class="flex items-center">
+                <i class="fas fa-palette text-2xl text-blue-600 mr-2"></i>
+                <span class="text-xl font-semibold">图案数据管理系统</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="p-2 rounded-full hover:bg-gray-100">
+                    <i class="fas fa-bell text-gray-600"></i>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
+                         alt="用户头像" 
+                         class="h-8 w-8 rounded-full">
+                    <span class="text-gray-700">管理员</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容区域 -->
+    <div class="flex pt-16">
+        <!-- 侧边栏 -->
+        <aside class="w-64 bg-gray-800 text-white fixed h-full">
+            <nav class="mt-5 px-2">
+                <a href="pattern/list.html" target="mainFrame" class="sidebar-item group flex items-center px-4 py-2 text-gray-300 rounded-md mb-1">
+                    <i class="fas fa-images mr-3"></i>
+                    <span>图案管理</span>
+                </a>
+                <a href="history/list.html" target="mainFrame" class="sidebar-item group flex items-center px-4 py-2 text-gray-300 rounded-md mb-1">
+                    <i class="fas fa-history mr-3"></i>
+                    <span>历史背景</span>
+                </a>
+                <a href="attribute/list.html" target="mainFrame" class="sidebar-item group flex items-center px-4 py-2 text-gray-300 rounded-md mb-1">
+                    <i class="fas fa-paint-brush mr-3"></i>
+                    <span>图案属性</span>
+                </a>
+                <a href="media/list.html" target="mainFrame" class="sidebar-item group flex items-center px-4 py-2 text-gray-300 rounded-md mb-1">
+                    <i class="fas fa-photo-video mr-3"></i>
+                    <span>媒体资料</span>
+                </a>
+                <a href="tag/list.html" target="mainFrame" class="sidebar-item group flex items-center px-4 py-2 text-gray-300 rounded-md mb-1">
+                    <i class="fas fa-tags mr-3"></i>
+                    <span>标签管理</span>
+                </a>
+                <a href="user/list.html" target="mainFrame" class="sidebar-item group flex items-center px-4 py-2 text-gray-300 rounded-md mb-1">
+                    <i class="fas fa-users mr-3"></i>
+                    <span>用户管理</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- 主内容区域 -->
+        <main class="ml-64 flex-1 p-8">
+            <iframe name="mainFrame" src="pattern/list.html" class="content-frame w-full border-none bg-white rounded-lg shadow"></iframe>
+        </main>
+    </div>
+  </body>
+</html>

@@ -9,6 +9,225 @@
     <link href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" rel="stylesheet">
     <link href="../styles/common.css" rel="stylesheet">
     <style>
+        /* 标签选择器样式 */
+        .tag-selector {
+            position: relative;
+            width: 100%;
+        }
+
+        .tag-selector-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #dcdfe6;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .tag-selector-input:hover {
+            border-color: #c0c4cc;
+        }
+
+        .tag-selector-input:focus {
+            border-color: #409EFF;
+            outline: none;
+        }
+
+        .tag-selector-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: #fff;
+            border: 1px solid #dcdfe6;
+            border-radius: 4px;
+            box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .tag-selector-dropdown.show {
+            display: block;
+        }
+
+        .tag-tree {
+            padding: 8px;
+        }
+
+        .tag-tree-node {
+            margin: 4px 0;
+        }
+
+        .tag-tree-node-content {
+            display: flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .tag-tree-node-content:hover {
+            background-color: #f5f7fa;
+        }
+
+        .tag-tree-node-content.selected {
+            background-color: #ecf5ff;
+            color: #409EFF;
+        }
+
+        .tag-tree-node-children {
+            margin-left: 20px;
+        }
+
+        .tag-tree-node-icon {
+            margin-right: 4px;
+            color: #909399;
+            transition: transform 0.3s;
+        }
+
+        .tag-tree-node-icon.expanded {
+            transform: rotate(90deg);
+        }
+
+        .selected-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 4px;
+        }
+
+        .selected-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 6px;
+            background-color: #ecf5ff;
+            color: #409EFF;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .selected-tag .remove-tag {
+            margin-left: 4px;
+            cursor: pointer;
+            color: #909399;
+        }
+
+        .selected-tag .remove-tag:hover {
+            color: #f56c6c;
+        }
+
+        /* 筛选按钮样式 */
+        .filter-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border: 1px solid #dcdfe6;
+            border-radius: 4px;
+            background-color: #fff;
+            color: #333;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            border-color: #409EFF;
+            color: #409EFF;
+        }
+
+        /* 筛选弹窗样式 */
+        .filter-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .filter-modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 20px;
+            width: 300px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .filter-modal-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .filter-modal-close {
+            cursor: pointer;
+            font-size: 20px;
+            color: #666;
+            transition: color 0.3s ease;
+        }
+
+        .filter-modal-close:hover {
+            color: #409EFF;
+        }
+
+        .filter-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .filter-label {
+            width: 60px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .filter-input {
+            flex: 1;
+            padding: 6px 8px;
+            border: 1px solid #dcdfe6;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .filter-input:focus {
+            border-color: #409EFF;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.2);
+        }
+
+        .filter-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
         /* 新增弹窗样式 */
         .modal {
             display: none;
@@ -454,8 +673,78 @@
                     </select>
                 </div>
                 <div class="search-item">
-                    <button class="btn btn-primary" style="width: 100px;">
-                        筛选
+                    <label class="search-label">图案标签</label>
+                    <div class="tag-selector">
+                        <div class="tag-selector-input" onclick="toggleTagSelector()">
+                            <span class="selected-tags-text">请选择标签</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="tag-selector-dropdown" id="tagSelectorDropdown">
+                            <div class="tag-tree">
+                                <!-- 年代标签 -->
+                                <div class="tag-tree-node">
+                                    <div class="tag-tree-node-content" onclick="toggleTagNode(this)">
+                                        <i class="fas fa-chevron-right tag-tree-node-icon"></i>
+                                        <span>年代</span>
+                                    </div>
+                                    <div class="tag-tree-node-children">
+                                        <div class="tag-tree-node-content" onclick="selectTag(this, '唐代')">
+                                            <span>唐代</span>
+                                        </div>
+                                        <div class="tag-tree-node-content" onclick="selectTag(this, '宋代')">
+                                            <span>宋代</span>
+                                        </div>
+                                        <div class="tag-tree-node-content" onclick="selectTag(this, '明代')">
+                                            <span>明代</span>
+                                        </div>
+                                        <div class="tag-tree-node-content" onclick="selectTag(this, '清代')">
+                                            <span>清代</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- 颜色标签 -->
+                                <div class="tag-tree-node">
+                                    <div class="tag-tree-node-content" onclick="toggleTagNode(this)">
+                                        <i class="fas fa-chevron-right tag-tree-node-icon"></i>
+                                        <span>颜色</span>
+                                    </div>
+                                    <div class="tag-tree-node-children">
+                                        <div class="tag-tree-node-content" onclick="selectTag(this, '红色')">
+                                            <span>红色</span>
+                                        </div>
+                                        <div class="tag-tree-node-content" onclick="selectTag(this, '蓝色')">
+                                            <span>蓝色</span>
+                                        </div>
+                                        <div class="tag-tree-node-content" onclick="selectTag(this, '绿色')">
+                                            <span>绿色</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- 地区标签 -->
+                                <div class="tag-tree-node">
+                                    <div class="tag-tree-node-content" onclick="toggleTagNode(this)">
+                                        <i class="fas fa-chevron-right tag-tree-node-icon"></i>
+                                        <span>地区</span>
+                                    </div>
+                                    <div class="tag-tree-node-children">
+                                        <div class="tag-tree-node-content" onclick="selectTag(this, '中原')">
+                                            <span>中原</span>
+                                        </div>
+                                        <div class="tag-tree-node-content" onclick="selectTag(this, '江南')">
+                                            <span>江南</span>
+                                        </div>
+                                        <div class="tag-tree-node-content" onclick="selectTag(this, '岭南')">
+                                            <span>岭南</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="search-item">
+                    <button class="filter-btn" onclick="showFilterModal()">
+                        <i class="fas fa-filter"></i>
                     </button>
                 </div>
             </div>
@@ -577,6 +866,76 @@
                     <div class="form-group">
                         <label>图案别名</label>
                         <input type="text" class="form-control" name="patternAlias">
+                    </div>
+                    <div class="form-group">
+                        <label>图案标签</label>
+                        <div class="tag-selector">
+                            <div class="tag-selector-input" onclick="toggleTagSelector()">
+                                <span class="selected-tags-text">请选择标签</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="tag-selector-dropdown" id="tagSelectorDropdown">
+                                <div class="tag-tree">
+                                    <!-- 年代标签 -->
+                                    <div class="tag-tree-node">
+                                        <div class="tag-tree-node-content" onclick="toggleTagNode(this)">
+                                            <i class="fas fa-chevron-right tag-tree-node-icon"></i>
+                                            <span>年代</span>
+                                        </div>
+                                        <div class="tag-tree-node-children">
+                                            <div class="tag-tree-node-content" onclick="selectTag(this, '唐代')">
+                                                <span>唐代</span>
+                                            </div>
+                                            <div class="tag-tree-node-content" onclick="selectTag(this, '宋代')">
+                                                <span>宋代</span>
+                                            </div>
+                                            <div class="tag-tree-node-content" onclick="selectTag(this, '明代')">
+                                                <span>明代</span>
+                                            </div>
+                                            <div class="tag-tree-node-content" onclick="selectTag(this, '清代')">
+                                                <span>清代</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 颜色标签 -->
+                                    <div class="tag-tree-node">
+                                        <div class="tag-tree-node-content" onclick="toggleTagNode(this)">
+                                            <i class="fas fa-chevron-right tag-tree-node-icon"></i>
+                                            <span>颜色</span>
+                                        </div>
+                                        <div class="tag-tree-node-children">
+                                            <div class="tag-tree-node-content" onclick="selectTag(this, '红色')">
+                                                <span>红色</span>
+                                            </div>
+                                            <div class="tag-tree-node-content" onclick="selectTag(this, '蓝色')">
+                                                <span>蓝色</span>
+                                            </div>
+                                            <div class="tag-tree-node-content" onclick="selectTag(this, '绿色')">
+                                                <span>绿色</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 地区标签 -->
+                                    <div class="tag-tree-node">
+                                        <div class="tag-tree-node-content" onclick="toggleTagNode(this)">
+                                            <i class="fas fa-chevron-right tag-tree-node-icon"></i>
+                                            <span>地区</span>
+                                        </div>
+                                        <div class="tag-tree-node-children">
+                                            <div class="tag-tree-node-content" onclick="selectTag(this, '中原')">
+                                                <span>中原</span>
+                                            </div>
+                                            <div class="tag-tree-node-content" onclick="selectTag(this, '江南')">
+                                                <span>江南</span>
+                                            </div>
+                                            <div class="tag-tree-node-content" onclick="selectTag(this, '岭南')">
+                                                <span>岭南</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label>图案类别</label>
@@ -738,6 +1097,35 @@
             </div>
         </div>
     </div>
+    <!-- 筛选弹窗 -->
+    <div class="filter-modal" id="filterModal">
+        <div class="filter-modal-content">
+            <div class="filter-modal-header">
+                <h3 class="filter-modal-title">高级搜索</h3>
+                <span class="filter-modal-close" onclick="closeFilterModal()">&times;</span>
+            </div>
+            <div class="filter-item">
+                <label class="filter-label">年代</label>
+                <input type="text" class="filter-input" placeholder="请输入年代">
+            </div>
+            <div class="filter-item">
+                <label class="filter-label">颜色</label>
+                <input type="text" class="filter-input" placeholder="请输入颜色">
+            </div>
+            <div class="filter-item">
+                <label class="filter-label">标签</label>
+                <input type="text" class="filter-input" placeholder="请输入标签">
+            </div>
+            <div class="filter-item">
+                <label class="filter-label">图案类别</label>
+                <input type="text" class="filter-input" placeholder="请输入图案类别">
+            </div>
+            <div class="filter-buttons">
+                <button class="btn btn-secondary" onclick="resetFilter()">重置</button>
+                <button class="btn btn-primary" onclick="applyFilter()">确定</button>
+            </div>
+        </div>
+    </div>
 
     <!-- 历史背景弹窗 -->
     <div class="modal" id="historyModal">
@@ -750,7 +1138,7 @@
                 <table class="table">
                     <thead>
                         <tr>
-                             <th>操作</th>
+                            <th>操作</th>
                             <th>图案名称</th>
                             <th>历史背景</th>
                             <th>年代</th>
@@ -759,12 +1147,12 @@
                             <th>相关文献</th>
                             <th>图案来源</th>
                             <th>附件</th>
-                 
+
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                                 <td>o</td>
+                            <td>o</td>
                             <td>牡丹纹样</td>
                             <td>唐代盛行，象征富贵吉祥</td>
                             <td>唐代</td>
@@ -800,19 +1188,19 @@
                 <table class="table">
                     <thead>
                         <tr>
-                                 <th>操作</th>
+                            <th>操作</th>
                             <th>图案ID</th>
                             <th>图案名称</th>
                             <th>图案别名</th>
                             <th>图案类别</th>
                             <th>图案类型</th>
                             <th>附件</th>
-                         
+
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                                   <td>o</td>
+                            <td>o</td>
                             <td>P001</td>
                             <td>牡丹纹样</td>
                             <td>富贵花</td>
@@ -845,7 +1233,7 @@
                 <table class="table">
                     <thead>
                         <tr>
-                                 <th>操作</th>
+                            <th>操作</th>
                             <th>图案名称</th>
                             <th>图像文件</th>
                             <th>图像描述</th>
@@ -853,12 +1241,12 @@
                             <th>视频描述</th>
                             <th>音频资料</th>
                             <th>三维模型</th>
-                        
+
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                                <td>o</td>
+                            <td>o</td>
                             <td>牡丹纹样</td>
                             <td>
                                 <div class="file-preview">
@@ -886,7 +1274,7 @@
                                     <span class="filename">peony_3d.obj</span>
                                 </div>
                             </td>
-                    
+
                         </tr>
                     </tbody>
                 </table>
@@ -1010,50 +1398,119 @@
                         <input type="text" class="form-control" name="patternAlias">
                     </div>
                     <div class="form-group">
-                        <label>图案类别</label>
-                        <select class="form-control" name="patternCategory" required>
-                            <option value="">请选择类别</option>
-                            <option value="floral">花卉类</option>
-                            <option value="animal">动物类</option>
-                            <option value="geometric">几何类</option>
-                            <option value="character">人物类</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>图案类型</label>
-                        <select class="form-control" name="patternType" required>
-                            <option value="">请选择类型</option>
-                            <option value="traditional">传统图案</option>
-                            <option value="modern">现代图案</option>
-                            <option value="folk">民间图案</option>
-                            <option value="religious">宗教图案</option>
-                        </select>
-                    </div>
-                    <div class="upload-area">
-                        <h4>文件上传</h4>
-                        <div id="uploadArea">
-                            <!-- Element UI 上传组件将在这里初始化 -->
-                        </div>
-                        <div class="upload-buttons">
-                            <button type="button" class="btn btn-primary" onclick="initUploader()">
-                                <i class="fas fa-upload"></i>文件上传
-                            </button>
-                            <button type="button" class="btn btn-primary" onclick="startScanner()">
-                                <i class="fas fa-scanner"></i>扫描仪上传
-                            </button>
-                        </div>
-                    </div>
-                    <div class="function-buttons-container">
-                        <button type="button" class="function-button" onclick="showHistoryModal()">
-                            图案历史与文化背景
-                        </button>
-                        <button type="button" class="function-button" onclick="showAttributeModal()">
-                            图案本身属性
-                        </button>
-                        <button type="button" class="function-button" onclick="showMediaModal()">
-                            媒体与资料管理
-                        </button>
-                    </div>
+                        <label>图片标签</label>
+                        <div class="tag-selector">
+                            <div class="tag-selector-input" onclick="toggleTagSelector()">
+                                <span class="selected-tags-text">请选择标签</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="tag-selector-dropdown" id="tagSelectorDropdown">
+                                <div class="tag-tree">
+                                    <!-- 年代标签 -->
+                                    <div class="tag-tree-node">
+                                        <div class="tag-tree-node-content" onclick="toggleTagNode(this)">
+                                            <i class="fas fa-chevron-right tag-tree-node-icon"></i>
+                                            <span>年代</span>
+                                        </div>
+                                        <div class="tag-tree-node-children">
+                                            <div class="tag-tree-node-content" onclick="selectTag(this, '唐代')">
+                                                <span>唐代</span>
+                                            </div>
+                                            <div class="tag-tree-node-content" onclick="selectTag(this, '宋代')">
+                                                <span>宋代</span>
+                                            </div>
+                                            <div class="tag-tree-node-content" onclick="selectTag(this, '明代')">
+                                                <span>明代</span>
+                                            </div>
+                                            <div class="tag-tree-node-content" onclick="selectTag(this, '清代')">
+                                                <span>清代</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 颜色标签 -->
+                                    <div class="tag-tree-node">
+                                        <div class="tag-tree-node-content" onclick="toggleTagNode(this)">
+                                            <i class="fas fa-chevron-right tag-tree-node-icon"></i>
+                                            <span>颜色</span>
+                                        </div>
+                                        <div class="tag-tree-node-children">
+                                            <div class="tag-tree-node-content" onclick="selectTag(this, '红色')">
+                                                <span>红色</span>
+                                            </div>
+                                            <div class="tag-tree-node-content" onclick="selectTag(this, '蓝色')">
+                                                <span>蓝色</span>
+                                            </div>
+                                            <div class="tag-tree-node-content" onclick="selectTag(this, '绿色')">
+                                                <span>绿色</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 地区标签 -->
+                                    <div class="tag-tree-node">
+                                        <div class="tag-tree-node-content" onclick="toggleTagNode(this)">
+                                            <i class="fas fa-chevron-right tag-tree-node-icon"></i>
+                                            <span>地区</span>
+                                        </div>
+                                        <div class="tag-tree-node-children">
+                                            <div class="tag-tree-node-content" onclick="selectTag(this, '中原')">
+                                                <span>中原</span>
+                                            </div>
+                                            <div class="tag-tree-node-content" onclick="selectTag(this, '江南')">
+                                                <span>江南</span>
+                                            </div>
+                                            <div class="tag-tree-node-content" onclick="selectTag(this, '岭南')">
+                                                <span>岭南</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>图案类别</label>
+                                <select class="form-control" name="patternCategory" required>
+                                    <option value="">请选择类别</option>
+                                    <option value="floral">花卉类</option>
+                                    <option value="animal">动物类</option>
+                                    <option value="geometric">几何类</option>
+                                    <option value="character">人物类</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>图案类型</label>
+                                <select class="form-control" name="patternType" required>
+                                    <option value="">请选择类型</option>
+                                    <option value="traditional">传统图案</option>
+                                    <option value="modern">现代图案</option>
+                                    <option value="folk">民间图案</option>
+                                    <option value="religious">宗教图案</option>
+                                </select>
+                            </div>
+
+                            <div class="upload-area">
+                                <h4>文件上传</h4>
+                                <div id="uploadArea">
+                                    <!-- Element UI 上传组件将在这里初始化 -->
+                                </div>
+                                <div class="upload-buttons">
+                                    <button type="button" class="btn btn-primary" onclick="initUploader()">
+                                        <i class="fas fa-upload"></i>文件上传
+                                    </button>
+                                    <button type="button" class="btn btn-primary" onclick="startScanner()">
+                                        <i class="fas fa-scanner"></i>扫描仪上传
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="function-buttons-container">
+                                <button type="button" class="function-button" onclick="showHistoryModal()">
+                                    图案历史与文化背景
+                                </button>
+                                <button type="button" class="function-button" onclick="showAttributeModal()">
+                                    图案本身属性
+                                </button>
+                                <button type="button" class="function-button" onclick="showMediaModal()">
+                                    媒体与资料管理
+                                </button>
+                            </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -1067,6 +1524,159 @@
     <script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
     <script>
+
+        // ... existing code ...
+
+        // 标签选择器相关函数
+        let selectedTags = new Set();
+
+        function toggleTagSelector() {
+            const dropdown = document.getElementById('tagSelectorDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        function toggleTagNode(node) {
+            const icon = node.querySelector('.tag-tree-node-icon');
+            const children = node.nextElementSibling;
+
+            icon.classList.toggle('expanded');
+            if (children) {
+                children.style.display = children.style.display === 'none' ? 'block' : 'none';
+            }
+        }
+
+        function selectTag(node, tag) {
+            if (selectedTags.has(tag)) {
+                // 取消选择
+                selectedTags.delete(tag);
+                node.classList.remove('selected');
+            } else {
+                // 选择标签
+                selectedTags.add(tag);
+                node.classList.add('selected');
+            }
+
+            updateSelectedTagsDisplay();
+        }
+
+        function updateSelectedTagsDisplay() {
+            const container = document.getElementById('selectedTags');
+            const input = document.querySelector('.selected-tags-text');
+
+            // 更新输入框显示
+            if (selectedTags.size === 0) {
+                input.textContent = '请选择标签';
+            } else {
+                input.textContent = `已选择 ${selectedTags.size} 个标签`;
+            }
+
+            // 更新已选标签显示
+            container.innerHTML = Array.from(selectedTags).map(tag => `
+        <span class="selected-tag">
+            ${tag}
+            <span class="remove-tag" onclick="removeTag('${tag}')">
+                <i class="fas fa-times"></i>
+            </span>
+        </span>
+    `).join('');
+        }
+
+        function removeTag(tag) {
+            selectedTags.delete(tag);
+            // 移除树节点中的选中状态
+            const node = document.querySelector(`.tag-tree-node-content[onclick="selectTag(this, '${tag}')"]`);
+            if (node) {
+                node.classList.remove('selected');
+            }
+            updateSelectedTagsDisplay();
+        }
+
+        // 点击外部关闭标签选择器
+        document.addEventListener('click', function (event) {
+            const selector = document.querySelector('.tag-selector');
+            const dropdown = document.getElementById('tagSelectorDropdown');
+
+            if (!selector.contains(event.target) && dropdown.classList.contains('show')) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        // 修改提交表单函数，添加标签数据
+        function submitPattern() {
+            const form = document.getElementById('addPatternForm');
+            if (form.checkValidity()) {
+                // 获取表单数据
+                const formData = new FormData(form);
+                const data = Object.fromEntries(formData.entries());
+
+                // 添加标签数据
+                data.tags = Array.from(selectedTags);
+
+                // TODO: 实现提交逻辑
+                console.log('提交图案数据:', data);
+
+                alert('保存成功！');
+                closeModal('addModal');
+            } else {
+                alert('请填写必填字段！');
+            }
+        }
+
+        // 修改关闭弹窗函数，重置标签选择
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            if (modalId === 'addModal') {
+                selectedTags.clear();
+                updateSelectedTagsDisplay();
+            }
+        }
+
+        // 显示筛选弹窗
+        function showFilterModal() {
+            const modal = document.getElementById('filterModal');
+            modal.style.display = 'block';
+        }
+
+        // 关闭筛选弹窗
+        function closeFilterModal() {
+            const modal = document.getElementById('filterModal');
+            modal.style.display = 'none';
+        }
+
+        // 重置筛选条件
+        function resetFilter() {
+            const inputs = document.querySelectorAll('.filter-modal .filter-input');
+            inputs.forEach(input => {
+                input.value = '';
+            });
+        }
+
+        // 应用筛选条件
+        function applyFilter() {
+            const year = document.querySelector('.filter-modal .filter-input[placeholder="请输入年代"]').value;
+            const color = document.querySelector('.filter-modal .filter-input[placeholder="请输入颜色"]').value;
+            const tag = document.querySelector('.filter-modal .filter-input[placeholder="请输入标签"]').value;
+
+            // TODO: 实现筛选逻辑
+            console.log('应用筛选条件:', { year, color, tag });
+
+            // 关闭弹窗
+            closeFilterModal();
+        }
+
+        // 点击弹窗外部关闭弹窗
+        document.getElementById('filterModal').addEventListener('click', function (event) {
+            if (event.target === this) {
+                closeFilterModal();
+            }
+        });
+
+        // 按ESC键关闭弹窗
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                closeFilterModal();
+            }
+        });
         // 显示新增弹窗
         function showAddModal() {
             document.getElementById('addModal').style.display = 'block';
